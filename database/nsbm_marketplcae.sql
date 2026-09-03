@@ -129,5 +129,7 @@ CREATE TABLE cart_items (
 );
 
 
+-- ADDED SUBTOTAL COLUMN
 ALTER TABLE order_items
 ADD subtotal DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER quantity;
+
