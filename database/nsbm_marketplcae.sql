@@ -136,3 +136,12 @@ ADD COLUMN subtotal DECIMAL(10,2) NOT NULL DEFAULT 1;
 -- ADDED QUANTITY COLUMN
 ALTER TABLE products
 ADD COLUMN quantity INT NOT NULL DEFAULT 1;
+
+-- ADDED CATEGORIES TO CATEGORIES TABLE
+INSERT INTO categories (name, description) VALUES
+('Electronics', 'Electronic devices and accessories'),
+('Books', 'Textbooks, novels and other books'),
+('Clothing', 'Clothes, shoes and fashion items'),
+('Food', 'Food and homemade products'),
+('Services', 'Services offered by NSBM students'),
+('Other', 'Other products and services');
