@@ -143,5 +143,39 @@ INSERT INTO categories (name, description) VALUES
 ('Books', 'Textbooks, novels and other books'),
 ('Clothing', 'Clothes, shoes and fashion items'),
 ('Food', 'Food and homemade products'),
-('Services', 'Services offered by NSBM students'),
-('Other', 'Other products and services');
+('Other', 'Other products');
+
+-- ADDED SAMPLE USERS TO TEST THE SYSTEM
+INSERT INTO users (name, email, password, phone, role, status) VALUES
+(
+    'Test Admin',
+    'admin@test.local',
+    '$2y$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+    '0700000001',
+    'admin',
+    'active'
+),
+(
+    'Test Student One',
+    'student1@test.local',
+    '$2y$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+    '0700000002',
+    'user',
+    'active'
+),
+(
+    'Test Student Two',
+    'student2@test.local',
+    '$2y$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+    '0700000003',
+    'user',
+    'active'
+),
+(
+    'Test Student Three',
+    'student3@test.local',
+    '$2y$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+    '0700000004',
+    'user',
+    'active'
+);
