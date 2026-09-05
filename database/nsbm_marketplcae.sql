@@ -205,7 +205,7 @@ INSERT INTO products (user_id, category_id, title, description, price, quantity,
 
 (
     4,
-    4,
+    2,
     'A4 Notebook Pack',
     'Pack of high-quality A4 notebooks suitable for university studies.',
     1200.00,
@@ -217,7 +217,7 @@ INSERT INTO products (user_id, category_id, title, description, price, quantity,
 
 (
     4,
-    5,
+    4,
     'Homemade Brownies',
     'Fresh homemade brownies prepared for university students.',
     1500.00,
@@ -226,3 +226,5 @@ INSERT INTO products (user_id, category_id, title, description, price, quantity,
     'NSBM Green University',
     'pending'
 );
+
+
