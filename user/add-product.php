@@ -16,6 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $user_id = $_SESSION["user_id"];
 
+    $image_name = "";
+
     // Check that required fields are filled
     if ($title == "" || $description == "" || $category_id == "" ||
         $price == "" || $quantity == "" || $location == "") {
@@ -32,35 +34,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
 
-        // Add product to database
-        $sql = "INSERT INTO products
-                (user_id, category_id, title, description, price, quantity, location, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')";
+        // Check if an image was uploaded
+        if (isset($_FILES["image"]) && $_FILES["image"]["error"] != 4) {
 
-        $stmt = $conn->prepare($sql);
+            if ($_FILES["image"]["error"] == 0) {
 
-        $stmt->bind_param(
-            "iissdis",
-            $user_id,
-            $category_id,
-            $title,
-            $description,
-            $price,
-            $quantity,
-            $location
-        );
+                $image_type = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
 
-        if ($stmt->execute()) {
+                // Allowed image types
+                $allowed_types = ["jpg", "jpeg", "png", "gif"];
 
-            $message = "Product added successfully. Waiting for admin approval.";
+                if (!in_array($image_type, $allowed_types)) {
 
-        } else {
+                    $message = "Only JPG, JPEG, PNG and GIF images are allowed.";
 
-            $message = "Error adding product.";
+                } else {
 
+                    // Create a new unique image name
+                    $image_name = time() . "_" . basename($_FILES["image"]["name"]);
+
+                    $image_path = "../assets/images/products/" . $image_name;
+
+                    // Move image to the products folder
+                    if (!move_uploaded_file($_FILES["image"]["tmp_name"], $image_path)) {
+
+                        $message = "Error uploading image.";
+                        $image_name = "";
+
+                    }
+                }
+
+            } else {
+
+                $message = "There was an error uploading the image.";
+
+            }
         }
 
-        $stmt->close();
+
+        // Add product if there is no error
+        if ($message == "") {
+
+            $sql = "INSERT INTO products
+                    (user_id, category_id, title, description, price, quantity, image, location, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
+
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bind_param(
+                "iissdiss",
+                $user_id,
+                $category_id,
+                $title,
+                $description,
+                $price,
+                $quantity,
+                $image_name,
+                $location
+            );
+
+            if ($stmt->execute()) {
+
+                $message = "Product added successfully. Waiting for admin approval.";
+
+            } else {
+
+                $message = "Error adding product.";
+
+            }
+
+            $stmt->close();
+        }
     }
 }
 
@@ -70,12 +114,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 
 <head>
+
     <title>Add Product</title>
+
 </head>
 
 <body>
 
     <h1>Add New Product</h1>
+
 
     <?php if ($message != "") { ?>
 
@@ -85,19 +132,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <?php } ?>
 
-    <form method="POST">
+
+    <form method="POST" enctype="multipart/form-data">
 
         <label>Product Title:</label>
         <br>
-        <input type="text" name="title" required>
+
+        <input
+            type="text"
+            name="title"
+            required
+        >
 
         <br><br>
+
 
         <label>Description:</label>
         <br>
-        <textarea name="description" rows="5" required></textarea>
+
+        <textarea
+            name="description"
+            rows="5"
+            required
+        ></textarea>
 
         <br><br>
+
 
         <label>Category:</label>
         <br>
@@ -119,8 +179,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             ?>
 
-                <option value="<?php echo $category['id']; ?>">
-                    <?php echo htmlspecialchars($category['name']); ?>
+                <option value="<?php echo $category["id"]; ?>">
+
+                    <?php echo htmlspecialchars($category["name"]); ?>
+
                 </option>
 
             <?php } ?>
@@ -129,31 +191,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <br><br>
 
+
         <label>Price:</label>
         <br>
-        <input type="number" name="price" step="0.01" min="0.01" required>
+
+        <input
+            type="number"
+            name="price"
+            step="0.01"
+            min="0.01"
+            required
+        >
 
         <br><br>
+
 
         <label>Quantity:</label>
         <br>
-        <input type="number" name="quantity" min="1" required>
+
+        <input
+            type="number"
+            name="quantity"
+            min="1"
+            required
+        >
 
         <br><br>
+
 
         <label>Location:</label>
         <br>
-        <input type="text" name="location" required>
+
+        <input
+            type="text"
+            name="location"
+            required
+        >
 
         <br><br>
 
-        <button type="submit">Add Product</button>
+
+        <label>Product Image:</label>
+        <br>
+
+        <input
+            type="file"
+            name="image"
+            accept=".jpg,.jpeg,.png,.gif"
+        >
+
+        <br><br>
+
+
+        <button type="submit">
+            Add Product
+        </button>
 
     </form>
 
+
     <br>
 
-    <a href="../products.php">Back to Products</a>
+    <a href="mylisting.php">
+        Back to My Listings
+    </a>
 
 </body>
 
