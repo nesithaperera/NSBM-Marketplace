@@ -40,6 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $quantity = $_POST["quantity"];
     $location = trim($_POST["location"]);
 
+    // Keep the old image
+    $image_name = $product["image"];
+
     // Check required fields
     if ($title == "" || $description == "" || $category_id == "" ||
         $price == "" || $quantity == "" || $location == "") {
@@ -56,51 +59,101 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
 
-        // Update the product
-        $update_sql = "UPDATE products
-                       SET category_id = ?,
-                           title = ?,
-                           description = ?,
-                           price = ?,
-                           quantity = ?,
-                           location = ?,
-                           status = 'pending'
-                       WHERE id = ? AND user_id = ?";
+        // Check if a new image was uploaded
+        if (isset($_FILES["image"]) && $_FILES["image"]["error"] != 4) {
 
-        $update_stmt = $conn->prepare($update_sql);
+            if ($_FILES["image"]["error"] == 0) {
 
-        $update_stmt->bind_param(
-            "issdisii",
-            $category_id,
-            $title,
-            $description,
-            $price,
-            $quantity,
-            $location,
-            $product_id,
-            $user_id
-        );
+                $image_type = strtolower(
+                    pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION)
+                );
 
-        if ($update_stmt->execute()) {
+                // Allowed image types
+                $allowed_types = ["jpg", "jpeg", "png", "gif"];
 
-            $message = "Product updated successfully. It is waiting for admin approval.";
+                if (!in_array($image_type, $allowed_types)) {
 
-            // Get updated product information
-            $product["title"] = $title;
-            $product["description"] = $description;
-            $product["category_id"] = $category_id;
-            $product["price"] = $price;
-            $product["quantity"] = $quantity;
-            $product["location"] = $location;
-            $product["status"] = "pending";
+                    $message = "Only JPG, JPEG, PNG and GIF images are allowed.";
 
-        } else {
+                } else {
 
-            $message = "Error updating product.";
+                    // Create a new image name
+                    $image_name = time() . "_" . basename($_FILES["image"]["name"]);
 
+                    $image_path = "../assets/images/products/" . $image_name;
+
+                    // Move new image to folder
+                    if (!move_uploaded_file(
+                        $_FILES["image"]["tmp_name"],
+                        $image_path
+                    )) {
+
+                        $message = "Error uploading image.";
+
+                        // Keep old image if upload fails
+                        $image_name = $product["image"];
+                    }
+                }
+
+            } else {
+
+                $message = "There was an error uploading the image.";
+
+            }
         }
 
-        $update_stmt->close();
+
+        // Update product if there is no error
+        if ($message == "") {
+
+            $update_sql = "UPDATE products
+                           SET category_id = ?,
+                               title = ?,
+                               description = ?,
+                               price = ?,
+                               quantity = ?,
+                               image = ?,
+                               location = ?,
+                               status = 'pending'
+                           WHERE id = ? AND user_id = ?";
+
+            $update_stmt = $conn->prepare($update_sql);
+
+            $update_stmt->bind_param(
+                "issdissii",
+                $category_id,
+                $title,
+                $description,
+                $price,
+                $quantity,
+                $image_name,
+                $location,
+                $product_id,
+                $user_id
+            );
+
+            if ($update_stmt->execute()) {
+
+                $message = "Product updated successfully. It is waiting for admin approval.";
+
+                // Update displayed product information
+                $product["title"] = $title;
+                $product["description"] = $description;
+                $product["category_id"] = $category_id;
+                $product["price"] = $price;
+                $product["quantity"] = $quantity;
+                $product["image"] = $image_name;
+                $product["location"] = $location;
+                $product["status"] = "pending";
+
+            } else {
+
+                $message = "Error updating product.";
+
+            }
+
+            $update_stmt->close();
+        }
     }
 }
 
@@ -110,12 +163,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 
 <head>
+
     <title>Edit Product</title>
+
 </head>
 
 <body>
 
     <h1>Edit Product</h1>
+
 
     <?php if ($message != "") { ?>
 
@@ -125,7 +181,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <?php } ?>
 
-    <form method="POST">
+
+    <form method="POST" enctype="multipart/form-data">
 
         <label>Product Title:</label>
         <br>
@@ -139,6 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <br><br>
 
+
         <label>Description:</label>
         <br>
 
@@ -149,6 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ><?php echo htmlspecialchars($product["description"]); ?></textarea>
 
         <br><br>
+
 
         <label>Category:</label>
         <br>
@@ -178,7 +237,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                     ?>
                 >
+
                     <?php echo htmlspecialchars($category["name"]); ?>
+
                 </option>
 
             <?php } ?>
@@ -186,6 +247,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </select>
 
         <br><br>
+
 
         <label>Price:</label>
         <br>
@@ -201,6 +263,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <br><br>
 
+
         <label>Quantity:</label>
         <br>
 
@@ -214,6 +277,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <br><br>
 
+
         <label>Location:</label>
         <br>
 
@@ -226,13 +290,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <br><br>
 
-        <button type="submit">Update Product</button>
+
+        <label>Product Image:</label>
+        <br>
+
+        <?php if (!empty($product["image"]) && $product["image"] != "null") { ?>
+
+            <p>Current Image:</p>
+
+            <img
+                src="../assets/images/products/<?php echo htmlspecialchars($product["image"]); ?>"
+                width="200"
+                alt="Current Product Image"
+            >
+
+            <br><br>
+
+        <?php } ?>
+
+
+        <input
+            type="file"
+            name="image"
+            accept=".jpg,.jpeg,.png,.gif"
+        >
+
+        <br>
+
+        <small>
+            Leave this empty if you want to keep the current image.
+        </small>
+
+        <br><br>
+
+
+        <button type="submit">
+            Update Product
+        </button>
 
     </form>
 
+
     <br>
 
-    <a href="mylisting.php">Back to My Listings</a>
+    <a href="mylisting.php">
+        Back to My Listings
+    </a>
 
 </body>
 
