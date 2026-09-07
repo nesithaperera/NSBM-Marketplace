@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $stmt = $conn->prepare(
                 "INSERT INTO users (name, email, phone, password)
-                 VALUES (?, ?, ?, ?, 'user', 'active')"
+                 VALUES (?, ?, ?, ?)"
             );
 
             $stmt->bind_param(
