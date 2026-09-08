@@ -5,7 +5,6 @@ require_once "../config/database.php";
 
 $user_id = $_SESSION["user_id"];
 
-// Get the logged-in user's information
 $stmt = $conn->prepare(
     "SELECT name, email, phone, profile_image, created_at
      FROM users

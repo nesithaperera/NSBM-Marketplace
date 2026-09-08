@@ -6,7 +6,6 @@ require_once "../config/database.php";
 $user_id = $_SESSION["user_id"];
 $message = "";
 
-// Get current user information
 $stmt = $conn->prepare(
     "SELECT name, email, phone
      FROM users
@@ -21,7 +20,6 @@ $user = $result->fetch_assoc();
 
 $stmt->close();
 
-// Update profile
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $name = trim($_POST["name"]);
@@ -43,12 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($stmt->execute()) {
 
-            // Update the name stored in the session
             $_SESSION["user_name"] = $name;
 
             $message = "Profile updated successfully.";
 
-            // Update the displayed values
             $user["name"] = $name;
             $user["phone"] = $phone;
 
