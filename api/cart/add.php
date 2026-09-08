@@ -6,7 +6,7 @@ require_once "../../config/database.php";
 if(!isset($_SESSION["user_id"])) {
     http_response_code(401);
     
-    echojson_encode([
+    echo json_encode([
         "success" => false,
         "message" => "Please login first."
     ]);
