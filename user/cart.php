@@ -176,7 +176,7 @@ async function loadCart() {
         data.items.forEach(item => {
 
             let image = item.image
-                ? "../uploads/" + item.image
+                ? "../assets/images/products/" + item.image
                 : "../assets/images/no-image.png";
 
             html += `
