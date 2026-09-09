@@ -182,7 +182,7 @@ async function loadOrders() {
                         </p>
 
                         <a
-                            href="orderdetails.php?order_id=${order.order_id}"
+                            href="order-details.php?order_id=${order.order_id}"
                             class="view-btn">
                             View Details
                         </a>
