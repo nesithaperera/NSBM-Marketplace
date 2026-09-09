@@ -217,7 +217,7 @@ async function confirmOrder() {
         if (data.success) {
 
             window.location.href =
-                "ordersuccess.php?order_id=" + data.order_id;
+                "order-success.php?order_id=" + data.order_id;
 
         } else {
 
