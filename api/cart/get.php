@@ -37,7 +37,7 @@ $sql = "SELECT
             orders.total_amount,
             orders.status,
             orders.created_at,
-            COUNT(order_items.id) AS order_count
+            SUM(order_items.quantity) AS order_count
         FROM orders
         LEFT JOIN order_items
             ON orders.id = order_items.order_id
