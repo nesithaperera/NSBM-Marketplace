@@ -168,15 +168,87 @@ $items_result = $items_stmt->get_result();
     </h2>
 
 
-    <p>
-        <strong>Status:</strong>
+    <h3>
+    Order Status
+</h3>
 
+<p>
+    Current Status:
+
+    <strong>
         <?php
         echo htmlspecialchars(
             ucfirst($order["status"])
         );
         ?>
-    </p>
+    </strong>
+</p>
+
+
+<form
+    action="update-order-status.php"
+    method="POST"
+>
+
+    <input
+        type="hidden"
+        name="order_id"
+        value="<?php echo (int) $order["id"]; ?>"
+    >
+
+
+    <label>
+        Change Status:
+    </label>
+
+    <select
+        name="status"
+        required
+    >
+
+        <option
+            value="pending"
+            <?php
+            if ($order["status"] === "pending") {
+                echo "selected";
+            }
+            ?>
+        >
+            Pending
+        </option>
+
+
+        <option
+            value="completed"
+            <?php
+            if ($order["status"] === "completed") {
+                echo "selected";
+            }
+            ?>
+        >
+            Completed
+        </option>
+
+
+        <option
+            value="cancelled"
+            <?php
+            if ($order["status"] === "cancelled") {
+                echo "selected";
+            }
+            ?>
+        >
+            Cancelled
+        </option>
+
+    </select>
+
+
+    <button type="submit">
+        Update Status
+    </button>
+
+</form>
 
 
     <p>
