@@ -267,33 +267,55 @@ $total_sales = $result->fetch_assoc()["total"];
 
     <!-- ADMIN LINKS -->
 
-    <div class="dashboard-links">
+   <div class="dashboard-links">
 
-        <h2>
-            Admin Management
-        </h2>
+    <h2>
+        Admin Management
+    </h2>
 
-        <a href="users.php">
-            👥 Manage Users
-        </a>
 
-        <a href="products.php">
-            📦 Manage Products
-        </a>
+    <!-- USERS -->
 
-        <a href="categories.php">
-            🗂️ Manage Categories
-        </a>
+    <a href="users.php">
+        👥 Manage Users
+    </a>
 
-        <a href="reports.php">
-            📊 Reports
-        </a>
 
-        <a href="../logout.php">
-            🚪 Logout
-        </a>
+    <!-- PRODUCTS -->
 
-    </div>
+    <a href="products.php">
+        📦 Manage Products
+    </a>
+
+
+    <!-- CATEGORIES -->
+
+    <a href="categories.php">
+        🗂️ Manage Categories
+    </a>
+
+
+    <!-- ORDERS -->
+
+    <a href="orders.php">
+        🛒 Manage Orders
+    </a>
+
+
+    <!-- REPORTS -->
+
+    <a href="reports.php">
+        📊 Reports
+    </a>
+
+
+    <!-- LOGOUT -->
+
+    <a href="../logout.php">
+        🚪 Logout
+    </a>
+
+</div>
 
 </div>
 
