@@ -133,6 +133,7 @@ $result = $conn->query($sql);
                     <th>Location</th>
                     <th>Status</th>
                     <th>Created</th>
+                    <th>Action</th>
                 </tr>
             </thead>
 
@@ -186,6 +187,48 @@ $result = $conn->query($sql);
                             <?php echo htmlspecialchars($product["created_at"]); ?>
                         </td>
 
+                        <td>
+                            <?php if ($product["status"]  === "pending"): ?>
+                                <form action="approve-product.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="product_id" value="<?php echo $product["id"]; ?>">
+                                    <button type="submit">Approve</button>
+                            </form>
+
+                             <form 
+            action="reject-product.php" 
+            method="POST" 
+            style="display:inline;"
+            onsubmit="return confirm('Are you sure you want to reject this product?');"
+        >
+
+            <input 
+                type="hidden" 
+                name="product_id" 
+                value="<?php echo $product["id"]; ?>"
+            >
+
+            <button type="submit">
+                Reject
+            </button>
+
+        </form>
+
+    <?php elseif ($product["status"] === "approved"): ?>
+
+        Approved
+
+    <?php elseif ($product["status"] === "rejected"): ?>
+
+        Rejected
+
+    <?php elseif ($product["status"] === "sold"): ?>
+
+        Sold
+
+    <?php endif; ?>
+
+</td>
+
                     </tr>
 
                 <?php endwhile; ?>
@@ -193,7 +236,7 @@ $result = $conn->query($sql);
             <?php else: ?>
 
                 <tr>
-                    <td colspan="9">
+                    <td colspan="10">
                         No products found.
                     </td>
                 </tr>
