@@ -111,7 +111,7 @@ $order_id = isset($_GET["order_id"])
         <?php if ($order_id > 0): ?>
 
             <a
-                href="orderdetails.php?order_id=<?php echo $order_id; ?>"
+                href="order-details.php?order_id=<?php echo $order_id; ?>"
                 class="success-btn">
                 View Order
             </a>
