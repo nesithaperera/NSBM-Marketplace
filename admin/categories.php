@@ -186,6 +186,14 @@ $result = $conn->query($sql);
                                 Edit
                             </a>
 
+                            <a
+                                 href="delete-category.php?id=<?php echo $category["id"]; ?>"
+                                 class="btn"
+                                onclick="return confirm('Are you sure you want to delete this category?');"
+                            >
+                                 Delete
+                            </a>
+
                         </td>
 
                     </tr>
