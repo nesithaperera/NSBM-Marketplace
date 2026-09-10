@@ -1875,3 +1875,58 @@ body {
 
 }
 
+/* ============================= */
+/* Authentication Form Fix       */
+/* ============================= */
+
+.auth-card form {
+    display: block;
+    width: 100%;
+}
+
+.auth-form-group {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.auth-form-group label {
+    display: block;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.auth-form-group input {
+    display: block !important;
+    width: 100% !important;
+    height: 46px;
+
+    padding: 10px 12px;
+
+    border: 1px solid #cccccc !important;
+    border-radius: 7px;
+
+    background-color: #ffffff !important;
+    color: #222222 !important;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+
+    box-sizing: border-box;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.auth-form-group input::placeholder {
+    color: #888888;
+    opacity: 1;
+}
+
+.auth-form-group input:focus {
+    outline: none;
+
+    border-color: #006b3c !important;
+
+    box-shadow: 0 0 0 2px rgba(0, 107, 60, 0.1);
+}
