@@ -20,66 +20,98 @@ require_once "../includes/auth.php";
 
 <body>
 
-    <h1>NSBM Marketplace</h1>
+<?php include "../includes/header.php"; ?>
 
-    <h2>
-        Welcome, <?php echo htmlspecialchars($_SESSION["user_name"]); ?>!
-    </h2>
 
-    <p>You are logged in successfully.</p>
+<div class="dashboard-container">
 
-    <hr>
+    <div class="dashboard-header">
 
-    <h3>User Dashboard</h3>
+        <h1>User Dashboard</h1>
 
-    <!-- Profile -->
-    <p>
-        <a href="profile.php">My Profile</a>
-    </p>
+        <h2>
+            Welcome,
+            <?php echo htmlspecialchars($_SESSION["user_name"]); ?>!
+        </h2>
 
-    <p>
-        <a href="edit-profile.php">Edit Profile</a>
-    </p>
+        <p>
+            You are logged in successfully.
+        </p>
 
-    <p>
-        <a href="change-password.php">Change Password</a>
-    </p>
+    </div>
+
 
     <hr>
 
-    <h3>Marketplace</h3>
 
-    <!-- Add Product -->
+    <h3>👤 My Account</h3>
+
     <p>
-        <a href="add-product.php">➕ Add Product</a>
+        <a href="profile.php">
+            My Profile
+        </a>
     </p>
 
-    <!-- My Listings -->
     <p>
-        <a href="mylisting.php">📦 My Listings</a>
+        <a href="edit-profile.php">
+            Edit Profile
+        </a>
     </p>
 
-    <!-- Browse Products -->
     <p>
-        <a href="../products.php">🛍️ Browse Products</a>
+        <a href="change-password.php">
+            Change Password
+        </a>
     </p>
 
-    <!-- Cart -->
-    <p>
-        <a href="cart.php">🛒 My Cart</a>
-    </p>
-
-    <!-- Purchases -->
-    <p>
-        <a href="purchases.php">📋 My Orders</a>
-    </p>
 
     <hr>
 
-    <!-- Logout -->
+
+    <h3>🛍️ Marketplace</h3>
+
     <p>
-        <a href="../logout.php">Logout</a>
+        <a href="add-product.php">
+            ➕ Add Product
+        </a>
     </p>
+
+    <p>
+        <a href="mylisting.php">
+            📦 My Listings
+        </a>
+    </p>
+
+    <p>
+        <a href="../products.php">
+            🛍️ Browse Products
+        </a>
+    </p>
+
+    <p>
+        <a href="cart.php">
+            🛒 My Cart
+        </a>
+    </p>
+
+    <p>
+        <a href="purchases.php">
+            📋 My Orders
+        </a>
+    </p>
+
+
+    <hr>
+
+
+    <p>
+        <a href="../logout.php">
+            🚪 Logout
+        </a>
+    </p>
+
+</div>
+
 
 </body>
 
