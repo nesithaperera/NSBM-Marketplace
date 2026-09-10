@@ -7,7 +7,7 @@ if (!isset($_GET["id"])) {
     die("Product not found.");
 }
 
-$product_id = $_GET["id"];
+$product_id = intval($_GET["id"]);
 
 // Get product details
 $sql = "SELECT p.*, c.name AS category_name, u.name AS seller_name,
@@ -32,176 +32,253 @@ $product = $result->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-    <title><?php echo htmlspecialchars($product["title"]); ?></title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        <?php echo htmlspecialchars($product["title"]); ?>
+        - NSBM Marketplace
+    </title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
 
 <body>
 
-    <h1>NSBM Marketplace</h1>
+<?php include "includes/header.php"; ?>
 
 
-    <h2>
-        <?php echo htmlspecialchars($product["title"]); ?>
-    </h2>
+<main class="product-details-page">
 
+    <!-- Product Details -->
 
-    <?php if (!empty($product["image"]) && $product["image"] != "null") { ?>
+    <section class="product-details-container">
 
-        <img
-            src="assets/images/products/<?php echo htmlspecialchars($product["image"]); ?>"
-            width="250"
-            alt="Product Image"
-        >
 
-        <br><br>
+        <!-- Product Image -->
 
-    <?php } ?>
+        <div class="product-details-image">
 
+            <?php if (!empty($product["image"]) && $product["image"] != "null") { ?>
 
-    <h3>Product Information</h3>
+                <img
+                    src="assets/images/products/<?php echo htmlspecialchars($product["image"]); ?>"
+                    alt="<?php echo htmlspecialchars($product["title"]); ?>"
+                >
 
+            <?php } else { ?>
 
-    <p>
-        <strong>Category:</strong>
-        <?php echo htmlspecialchars($product["category_name"]); ?>
-    </p>
+                <div class="product-no-image">
+                    No Image Available
+                </div>
 
+            <?php } ?>
 
-    <p>
-        <strong>Description:</strong>
-        <?php echo nl2br(htmlspecialchars($product["description"])); ?>
-    </p>
+        </div>
 
 
-    <p>
-        <strong>Price:</strong>
-        Rs. <?php echo number_format($product["price"], 2); ?>
-    </p>
+        <!-- Product Information -->
 
+        <div class="product-details-info">
 
-    <p>
-        <strong>Available Quantity:</strong>
-        <?php echo $product["quantity"]; ?>
-    </p>
+            <p class="details-category">
+                <?php echo htmlspecialchars($product["category_name"]); ?>
+            </p>
 
 
-    <p>
-        <strong>Location:</strong>
-        <?php echo htmlspecialchars($product["location"]); ?>
-    </p>
+            <h1>
+                <?php echo htmlspecialchars($product["title"]); ?>
+            </h1>
 
 
-    <h3>Seller Information</h3>
+            <p class="details-price">
+                Rs. <?php echo number_format($product["price"], 2); ?>
+            </p>
 
 
-    <p>
-        <strong>Seller:</strong>
-        <?php echo htmlspecialchars($product["seller_name"]); ?>
-    </p>
+            <div class="details-description">
 
+                <h3>Description</h3>
 
-    <p>
-        <strong>Email:</strong>
-        <?php echo htmlspecialchars($product["seller_email"]); ?>
-    </p>
+                <p>
+                    <?php echo nl2br(htmlspecialchars($product["description"])); ?>
+                </p>
 
+            </div>
 
-    <p>
-        <strong>Phone:</strong>
-        <?php echo htmlspecialchars($product["seller_phone"]); ?>
-    </p>
 
+            <div class="details-info-list">
 
-    <hr>
+                <p>
+                    <strong>📍 Location:</strong>
+                    <?php echo htmlspecialchars($product["location"] ?? "N/A"); ?>
+                </p>
 
+                <p>
+                    <strong>📦 Available:</strong>
+                    <?php echo (int)$product["quantity"]; ?>
+                </p>
 
-    <h3>Add to Cart</h3>
+            </div>
 
 
-    <?php if ($product["quantity"] > 0) { ?>
+            <!-- Add to Cart -->
 
-        <label>Quantity:</label>
+            <div class="add-cart-section">
 
-        <input
-            type="number"
-            id="cartQuantity"
-            value="1"
-            min="1"
-            max="<?php echo $product["quantity"]; ?>"
-        >
+                <h3>Add to Cart</h3>
 
-        <button onclick="addToCart()">
-            Add to Cart
-        </button>
 
-        <p id="cartMessage"></p>
+                <?php if ($product["quantity"] > 0) { ?>
 
-    <?php } else { ?>
+                    <div class="cart-controls">
 
-        <p>This product is out of stock.</p>
+                        <label for="cartQuantity">
+                            Quantity
+                        </label>
 
-    <?php } ?>
+                        <input
+                            type="number"
+                            id="cartQuantity"
+                            value="1"
+                            min="1"
+                            max="<?php echo (int)$product["quantity"]; ?>"
+                        >
 
+                        <button
+                            type="button"
+                            onclick="addToCart()"
+                            class="add-cart-button"
+                        >
+                            🛒 Add to Cart
+                        </button>
 
-    <br>
+                    </div>
 
 
-    <a href="products.php">
-        Back to Products
-    </a>
+                    <p id="cartMessage" class="cart-message"></p>
 
+                <?php } else { ?>
 
-    <script>
+                    <p class="out-of-stock">
+                        This product is currently out of stock.
+                    </p>
 
-        function addToCart() {
+                <?php } ?>
 
-            var quantity = document.getElementById("cartQuantity").value;
+            </div>
 
-            var productId = <?php echo $product_id; ?>;
+        </div>
 
+    </section>
 
-            fetch("api/cart/add.php", {
 
-                method: "POST",
+    <!-- Seller Information -->
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+    <section class="seller-section">
 
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: quantity
-                })
+        <h2>Seller Information</h2>
 
-            })
+        <div class="seller-card">
 
-            .then(function(response) {
-                return response.json();
-            })
+            <p>
+                <strong>Seller:</strong>
+                <?php echo htmlspecialchars($product["seller_name"]); ?>
+            </p>
 
-            .then(function(data) {
+            <p>
+                <strong>Email:</strong>
+                <?php echo htmlspecialchars($product["seller_email"]); ?>
+            </p>
 
-                var message = document.getElementById("cartMessage");
+            <p>
+                <strong>Phone:</strong>
+                <?php echo htmlspecialchars($product["seller_phone"] ?? "N/A"); ?>
+            </p>
 
-                message.innerText = data.message;
+        </div>
 
-            })
+    </section>
 
-            .catch(function(error) {
 
-                document.getElementById("cartMessage").innerText =
-                    "Something went wrong.";
+    <!-- Back -->
 
-            });
+    <div class="back-products">
 
-        }
+        <a href="products.php">
+            ← Back to Products
+        </a>
 
-    </script>
+    </div>
+
+</main>
+
+
+<?php include "includes/footer.php"; ?>
+
+
+<script>
+
+function addToCart() {
+
+    var quantityInput = document.getElementById("cartQuantity");
+
+    var quantity = parseInt(quantityInput.value);
+
+    var productId = <?php echo (int)$product_id; ?>;
+
+    var message = document.getElementById("cartMessage");
+
+
+    if (quantity < 1) {
+
+        message.innerText = "Please select a valid quantity.";
+
+        return;
+    }
+
+
+    fetch("api/cart/add.php", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: quantity
+        })
+
+    })
+
+    .then(function(response) {
+        return response.json();
+    })
+
+    .then(function(data) {
+
+        message.innerText = data.message;
+
+    })
+
+    .catch(function(error) {
+
+        message.innerText =
+            "Something went wrong. Please try again.";
+
+    });
+
+}
+
+</script>
 
 
 </body>
