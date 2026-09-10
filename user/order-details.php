@@ -34,127 +34,56 @@ if ($order_id <= 0) {
 
     <link rel="stylesheet" href="../assets/css/style.css">
 
-    <style>
-
-        .order-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .order-title {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .order-box {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-        }
-
-        .order-header {
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-        }
-
-        .order-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 0;
-            border-bottom: 1px solid #eee;
-            gap: 20px;
-        }
-
-        .item-info h3 {
-            margin: 0 0 8px 0;
-        }
-
-        .item-info p {
-            margin: 5px 0;
-        }
-
-        .item-total {
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .order-total {
-            text-align: right;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 25px;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background: #e7f5ed;
-            color: #006b3c;
-            font-weight: bold;
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 18px;
-            background: #006b3c;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-
-        .empty-message {
-            text-align: center;
-            padding: 30px;
-        }
-
-        @media(max-width: 650px) {
-
-            .order-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .item-total {
-                align-self: flex-end;
-            }
-
-        }
-
-    </style>
-
 </head>
 
 <body>
 
 <?php include "../includes/header.php"; ?>
 
-<div class="order-container">
 
-    <h1 class="order-title">
-        📦 Order Details
-    </h1>
+<main class="order-details-page">
 
-    <div class="order-box">
+    <div class="order-container">
 
-        <div id="orderDetails">
-            Loading order...
+        <div class="order-title">
+
+            <h1>📦 Order Details</h1>
+
+            <p>
+                View the details of your purchase.
+            </p>
+
+        </div>
+
+
+        <div class="order-box">
+
+            <div id="orderDetails">
+
+                <div class="order-loading">
+                    Loading order details...
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
-</div>
+</main>
+
+
+<?php include "../includes/footer.php"; ?>
 
 
 <script>
 
 const orderId = <?php echo $order_id; ?>;
 
+
+/* ============================= */
+/* Load Order Details            */
+/* ============================= */
 
 async function loadOrderDetails() {
 
@@ -165,8 +94,10 @@ async function loadOrderDetails() {
                 "../api/orders/details.php?order_id=" + orderId
             );
 
+
         const data =
             await response.json();
+
 
         const container =
             document.getElementById("orderDetails");
@@ -175,17 +106,28 @@ async function loadOrderDetails() {
         if (!data.success) {
 
             container.innerHTML = `
-                <div class="empty-message">
 
-                    <h2>Unable to load order</h2>
+                <div class="order-message">
 
-                    <p>${data.message}</p>
+                    <div class="message-icon">
+                        ⚠️
+                    </div>
 
-                    <a href="purchases.php" class="back-btn">
+                    <h2>Unable to Load Order</h2>
+
+                    <p>
+                        ${data.message || "The order could not be found."}
+                    </p>
+
+                    <a
+                        href="purchases.php"
+                        class="order-btn primary-order-btn"
+                    >
                         ← Back to My Orders
                     </a>
 
                 </div>
+
             `;
 
             return;
@@ -197,52 +139,112 @@ async function loadOrderDetails() {
 
         let html = `
 
+            <!-- Order Header -->
+
             <div class="order-header">
 
-                <h2>
-                    Order #${order.id}
-                </h2>
+                <div>
 
-                <p>
-                    <strong>Date:</strong>
-                    ${new Date(order.created_at).toLocaleString()}
-                </p>
-
-                <p>
-                    <strong>Status:</strong>
-                    <span class="status">
-                        ${order.status}
+                    <span class="order-label">
+                        Order ID
                     </span>
-                </p>
+
+                    <h2>
+                        #${order.id}
+                    </h2>
+
+                </div>
+
+
+                <div class="order-status ${order.status}">
+
+                    ${order.status}
+
+                </div>
 
             </div>
+
+
+            <!-- Order Date -->
+
+            <div class="order-date">
+
+                <strong>Order Date:</strong>
+
+                ${new Date(order.created_at).toLocaleString()}
+
+            </div>
+
+
+            <!-- Items -->
+
+            <div class="order-items">
+
+                <h2>
+                    Ordered Products
+                </h2>
 
         `;
 
 
+        if (data.items.length === 0) {
+
+            html += `
+
+                <div class="no-order-items">
+
+                    No products found for this order.
+
+                </div>
+
+            `;
+
+        }
+
+
         data.items.forEach(item => {
+
+            let image = item.image
+                ? "../assets/images/products/" + item.image
+                : "../assets/images/no-image.png";
+
 
             html += `
 
                 <div class="order-item">
 
-                    <div class="item-info">
+                    <div class="order-product">
 
-                        <h3>
-                            ${item.title}
-                        </h3>
+                        <div class="order-product-image">
 
-                        <p>
-                            Price:
-                            Rs. ${Number(item.price).toFixed(2)}
-                        </p>
+                            <img
+                                src="${image}"
+                                alt="${item.title}"
+                            >
 
-                        <p>
-                            Quantity:
-                            ${item.quantity}
-                        </p>
+                        </div>
+
+
+                        <div class="item-info">
+
+                            <h3>
+                                ${item.title}
+                            </h3>
+
+                            <p>
+                                Price:
+                                Rs. ${Number(item.price).toFixed(2)}
+                            </p>
+
+                            <p>
+                                Quantity:
+                                ${item.quantity}
+                            </p>
+
+                        </div>
 
                     </div>
+
 
                     <div class="item-total">
 
@@ -259,38 +261,74 @@ async function loadOrderDetails() {
 
         html += `
 
+            </div>
+
+
+            <!-- Total -->
+
             <div class="order-total">
 
-                Total:
-                Rs. ${Number(order.total_amount).toFixed(2)}
+                <span>
+                    Total
+                </span>
+
+                <strong>
+                    Rs. ${Number(order.total_amount).toFixed(2)}
+                </strong>
 
             </div>
 
-            <a href="purchases.php" class="back-btn">
-                ← Back to My Orders
-            </a>
+
+            <!-- Actions -->
+
+            <div class="order-actions">
+
+                <a
+                    href="purchases.php"
+                    class="order-btn primary-order-btn"
+                >
+                    ← Back to My Orders
+                </a>
+
+                <a
+                    href="../products.php"
+                    class="order-btn secondary-order-btn"
+                >
+                    🛍️ Continue Shopping
+                </a>
+
+            </div>
 
         `;
 
 
         container.innerHTML = html;
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(error);
 
+
         document.getElementById("orderDetails").innerHTML = `
 
-            <div class="empty-message">
+            <div class="order-message">
 
-                <h2>Something went wrong</h2>
+                <div class="message-icon">
+                    ⚠️
+                </div>
+
+                <h2>Something Went Wrong</h2>
 
                 <p>
-                    Unable to load order details.
+                    Unable to load the order details.
                 </p>
 
-                <a href="purchases.php" class="back-btn">
+                <a
+                    href="purchases.php"
+                    class="order-btn primary-order-btn"
+                >
                     ← Back to My Orders
                 </a>
 
@@ -306,6 +344,7 @@ async function loadOrderDetails() {
 loadOrderDetails();
 
 </script>
+
 
 </body>
 
