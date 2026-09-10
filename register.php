@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once "config/database.php";
 
 $message = "";
@@ -7,30 +9,42 @@ $message_type = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    // Get form data
     $name = trim($_POST["name"] ?? "");
     $email = trim($_POST["email"] ?? "");
     $phone = trim($_POST["phone"] ?? "");
     $password = $_POST["password"] ?? "";
     $confirm_password = $_POST["confirm_password"] ?? "";
 
-    if (
-        empty($name) ||
-        empty($email) ||
-        empty($password) ||
-        empty($confirm_password)
-    ) {
 
-        $message = "Please fill in all required fields.";
+    // =========================
+    // VALIDATION
+    // =========================
+
+    if ($name === "" || $email === "" || $phone === "" ||
+        $password === "" || $confirm_password === "") {
+
+        $message = "Please fill in all fields.";
         $message_type = "error";
 
     } elseif (strlen($name) > 100) {
 
-        $message = "Name cannot be longer than 100 characters.";
+        $message = "Name must not exceed 100 characters.";
         $message_type = "error";
 
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
         $message = "Please enter a valid email address.";
+        $message_type = "error";
+
+    } elseif (strlen($email) > 150) {
+
+        $message = "Email must not exceed 150 characters.";
+        $message_type = "error";
+
+    } elseif (strlen($phone) > 20) {
+
+        $message = "Phone number must not exceed 20 characters.";
         $message_type = "error";
 
     } elseif (strlen($password) < 8) {
@@ -43,70 +57,92 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Passwords do not match.";
         $message_type = "error";
 
-    } elseif (strlen($phone) > 20) {
-
-        $message = "Phone number cannot be longer than 20 characters.";
-        $message_type = "error";
-
     } else {
 
-        $stmt = $conn->prepare(
-            "SELECT id
-             FROM users
-             WHERE email = ?"
-        );
+        // =========================
+        // CHECK IF EMAIL EXISTS
+        // =========================
 
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
+        $check_sql = "SELECT id FROM users WHERE email = ?";
 
-        $result = $stmt->get_result();
+        $check_stmt = $conn->prepare($check_sql);
 
-        if ($result->num_rows > 0) {
+        if (!$check_stmt) {
 
-            $message = "This email is already registered.";
+            $message = "Database error.";
             $message_type = "error";
-
-            $stmt->close();
 
         } else {
 
-            $stmt->close();
+            $check_stmt->bind_param("s", $email);
+            $check_stmt->execute();
 
-            $hashed_password = password_hash(
-                $password,
-                PASSWORD_DEFAULT
-            );
+            $check_result = $check_stmt->get_result();
 
-            $stmt = $conn->prepare(
-                "INSERT INTO users (name, email, phone, password)
-                 VALUES (?, ?, ?, ?)"
-            );
+            if ($check_result->num_rows > 0) {
 
-            $stmt->bind_param(
-                "ssss",
-                $name,
-                $email,
-                $phone,
-                $hashed_password
-            );
-
-            if ($stmt->execute()) {
-
-                $message = "Registration successful! You can now login.";
-                $message_type = "success";
-
-                // Clear form values after successful registration
-                $name = "";
-                $email = "";
-                $phone = "";
+                $message = "An account with this email already exists.";
+                $message_type = "error";
 
             } else {
 
-                $message = "Registration failed. Please try again.";
-                $message_type = "error";
+                // =========================
+                // HASH PASSWORD
+                // =========================
+
+                $hashed_password = password_hash(
+                    $password,
+                    PASSWORD_DEFAULT
+                );
+
+
+                // =========================
+                // INSERT USER
+                // =========================
+
+                $insert_sql = "INSERT INTO users
+                               (name, email, phone, password)
+                               VALUES (?, ?, ?, ?)";
+
+                $insert_stmt = $conn->prepare($insert_sql);
+
+                if (!$insert_stmt) {
+
+                    $message = "Database error.";
+                    $message_type = "error";
+
+                } else {
+
+                    $insert_stmt->bind_param(
+                        "ssss",
+                        $name,
+                        $email,
+                        $phone,
+                        $hashed_password
+                    );
+
+
+                    if ($insert_stmt->execute()) {
+
+                        $message = "Account created successfully! You can now login.";
+                        $message_type = "success";
+
+                        // Clear form values
+                        $name = "";
+                        $email = "";
+                        $phone = "";
+
+                    } else {
+
+                        $message = "Unable to create account. Please try again.";
+                        $message_type = "error";
+                    }
+
+                    $insert_stmt->close();
+                }
             }
 
-            $stmt->close();
+            $check_stmt->close();
         }
     }
 }
@@ -119,284 +155,211 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Register - NSBM Marketplace</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Create Account - NSBM Marketplace</title>
 
-    <style>
-
-        .register-page {
-            max-width: 550px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .register-card {
-            background: #ffffff;
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .register-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .register-header h1 {
-            margin-bottom: 8px;
-        }
-
-        .register-header p {
-            color: #666;
-            margin: 0;
-        }
-
-        .message {
-            padding: 12px 15px;
-            border-radius: 7px;
-            margin-bottom: 20px;
-        }
-
-        .message.success {
-            background: #e8f5ee;
-            color: #006b3c;
-        }
-
-        .message.error {
-            background: #fff3f3;
-            color: #b42318;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 7px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #ccc;
-            border-radius: 7px;
-            font-size: 15px;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #006b3c;
-        }
-
-        .required-note {
-            color: #777;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-
-        .register-button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 7px;
-            background: #006b3c;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .register-button:hover {
-            opacity: 0.9;
-        }
-
-        .login-link {
-            text-align: center;
-            margin-top: 25px;
-            color: #666;
-        }
-
-        .login-link a {
-            color: #006b3c;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 600px) {
-
-            .register-page {
-                margin: 30px auto;
-            }
-
-            .register-card {
-                padding: 25px 20px;
-            }
-
-        }
-
-    </style>
+    <link rel="stylesheet"
+          href="assets/css/style.css">
 
 </head>
 
+
 <body>
+
 
 <?php include "includes/header.php"; ?>
 
 
-<main class="register-page">
+<main class="auth-page">
 
-    <div class="register-card">
+    <div class="auth-container">
 
-        <div class="register-header">
-
-            <h1>Create Account</h1>
-
-            <p>
-                Join NSBM Marketplace and start buying and selling.
-            </p>
-
-        </div>
+        <div class="auth-card">
 
 
-        <?php if ($message != ""): ?>
+            <!-- ========================= -->
+            <!-- HEADER -->
+            <!-- ========================= -->
 
-            <div class="message <?php echo $message_type; ?>">
+            <div class="auth-header">
 
-                <?php echo htmlspecialchars($message); ?>
+                <h1>Create Account</h1>
 
-            </div>
-
-        <?php endif; ?>
-
-
-        <form method="POST" action="">
-
-            <div class="form-group">
-
-                <label for="name">
-                    Full Name
-                </label>
-
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    maxlength="100"
-                    value="<?php echo htmlspecialchars($name); ?>"
-                    placeholder="Enter your full name"
-                    required
-                >
+                <p>
+                    Join NSBM Marketplace and start
+                    buying and selling.
+                </p>
 
             </div>
 
 
-            <div class="form-group">
+            <!-- ========================= -->
+            <!-- MESSAGE -->
+            <!-- ========================= -->
 
-                <label for="email">
-                    Email
-                </label>
+            <?php if (!empty($message)) { ?>
 
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    maxlength="150"
-                    value="<?php echo htmlspecialchars($email); ?>"
-                    placeholder="Enter your email"
-                    required
-                >
+                <div class="auth-message <?php echo $message_type; ?>">
 
-            </div>
+                    <?php echo htmlspecialchars($message); ?>
 
-
-            <div class="form-group">
-
-                <label for="phone">
-                    Phone
-                </label>
-
-                <input
-                    type="text"
-                    id="phone"
-                    name="phone"
-                    maxlength="20"
-                    value="<?php echo htmlspecialchars($phone); ?>"
-                    placeholder="Enter your phone number"
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="password">
-                    Password
-                </label>
-
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    minlength="8"
-                    placeholder="Create a password"
-                    required
-                >
-
-                <div class="required-note">
-                    Password must be at least 8 characters long.
                 </div>
 
+            <?php } ?>
+
+
+            <!-- ========================= -->
+            <!-- REGISTER FORM -->
+            <!-- ========================= -->
+
+            <form method="POST"
+                  action="">
+
+
+                <!-- NAME -->
+
+                <div class="auth-form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your full name"
+                        maxlength="100"
+                        value="<?php echo htmlspecialchars($name ?? ""); ?>"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="auth-form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        maxlength="150"
+                        value="<?php echo htmlspecialchars($email ?? ""); ?>"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PHONE -->
+
+                <div class="auth-form-group">
+
+                    <label for="phone">
+                        Phone
+                    </label>
+
+                    <input
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        maxlength="20"
+                        value="<?php echo htmlspecialchars($phone ?? ""); ?>"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="auth-form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        minlength="8"
+                        required
+                    >
+
+                    <small>
+                        Password must be at least 8 characters long.
+                    </small>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="auth-form-group">
+
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Re-enter your password"
+                        minlength="8"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="auth-button">
+
+                    Create Account
+
+                </button>
+
+
+            </form>
+
+
+            <!-- ========================= -->
+            <!-- LOGIN LINK -->
+            <!-- ========================= -->
+
+            <div class="auth-footer">
+
+                <p>
+
+                    Already have an account?
+
+                    <a href="login.php">
+                        Login
+                    </a>
+
+                </p>
+
             </div>
 
 
-            <div class="form-group">
-
-                <label for="confirm_password">
-                    Confirm Password
-                </label>
-
-                <input
-                    type="password"
-                    id="confirm_password"
-                    name="confirm_password"
-                    minlength="8"
-                    placeholder="Enter your password again"
-                    required
-                >
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="register-button"
-            >
-                Create Account
-            </button>
-
-        </form>
-
-
-        <p class="login-link">
-
-            Already have an account?
-
-            <a href="login.php">
-                Login
-            </a>
-
-        </p>
+        </div>
 
     </div>
 
@@ -404,6 +367,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 <?php include "includes/footer.php"; ?>
+
 
 </body>
 
