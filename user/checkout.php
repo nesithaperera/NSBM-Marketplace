@@ -1,10 +1,12 @@
 <?php
+
 session_start();
 
 if (!isset($_SESSION["user_id"])) {
     header("Location: ../login.php");
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -13,66 +15,12 @@ if (!isset($_SESSION["user_id"])) {
 <head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Checkout - NSBM Marketplace</title>
 
     <link rel="stylesheet" href="../assets/css/style.css">
-
-    <style>
-
-        .checkout-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .checkout-title {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .checkout-box {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-        }
-
-        .checkout-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .checkout-total {
-            text-align: right;
-            font-size: 22px;
-            font-weight: bold;
-            margin-top: 25px;
-        }
-
-        .confirm-btn {
-            width: 100%;
-            padding: 15px;
-            margin-top: 20px;
-            background: #006b3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 17px;
-            cursor: pointer;
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 15px;
-            text-decoration: none;
-            color: #006b3c;
-        }
-
-    </style>
 
 </head>
 
@@ -80,41 +28,93 @@ if (!isset($_SESSION["user_id"])) {
 
 <?php include "../includes/header.php"; ?>
 
-<div class="checkout-container">
 
-    <h1 class="checkout-title">Checkout</h1>
+<main class="checkout-page">
 
-    <div class="checkout-box">
+    <div class="checkout-container">
 
-        <h2>Order Summary</h2>
+        <!-- Page Header -->
 
-        <div id="checkoutItems">
-            Loading...
+        <div class="checkout-title">
+
+            <h1>Checkout</h1>
+
+            <p>
+                Review your order before confirming your purchase.
+            </p>
+
         </div>
 
-        <div id="checkoutTotal"></div>
 
-        <button
-            id="confirmButton"
-            class="confirm-btn"
-            onclick="confirmOrder()"
-            style="display:none;">
-            Confirm Purchase
-        </button>
+        <!-- Order Summary -->
 
-        <a href="cart.php" class="back-btn">
-            ← Back to Cart
-        </a>
+        <div class="checkout-box">
+
+            <div class="checkout-heading">
+
+                <h2>🛒 Order Summary</h2>
+
+            </div>
+
+
+            <div id="checkoutItems">
+
+                <div class="checkout-loading">
+                    Loading order summary...
+                </div>
+
+            </div>
+
+
+            <div id="checkoutTotal"></div>
+
+
+            <!-- Confirm Order -->
+
+            <div class="confirm-section">
+
+                <button
+                    id="confirmButton"
+                    class="confirm-btn"
+                    onclick="confirmOrder()"
+                    style="display:none;"
+                >
+                    Confirm Purchase
+                </button>
+
+                <p class="checkout-note">
+                    This is a simulated purchase for the NSBM Marketplace.
+                </p>
+
+            </div>
+
+
+            <div class="checkout-back">
+
+                <a href="cart.php">
+                    ← Back to Cart
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
+</main>
+
+
+<?php include "../includes/footer.php"; ?>
 
 
 <script>
 
 let cartData = null;
 
+
+/* ============================= */
+/* Load Checkout                 */
+/* ============================= */
 
 async function loadCheckout() {
 
@@ -126,76 +126,190 @@ async function loadCheckout() {
         const data =
             await response.json();
 
+
         if (!data.success) {
 
-            document.getElementById("checkoutItems").innerHTML =
-                "<p>Unable to load cart.</p>";
+            document.getElementById("checkoutItems").innerHTML = `
+
+                <div class="checkout-message">
+
+                    <h3>Unable to load cart</h3>
+
+                    <p>
+                        ${data.message || "Please try again."}
+                    </p>
+
+                </div>
+
+            `;
 
             return;
         }
 
+
         cartData = data;
+
+
+        /* Empty Cart */
 
         if (data.items.length === 0) {
 
             document.getElementById("checkoutItems").innerHTML = `
-                <p>Your cart is empty.</p>
-                <a href="../index.php">Continue Shopping</a>
+
+                <div class="checkout-message">
+
+                    <div class="empty-checkout-icon">
+                        🛒
+                    </div>
+
+                    <h3>Your cart is empty</h3>
+
+                    <p>
+                        Add some products before checking out.
+                    </p>
+
+                    <a href="../products.php" class="continue-shopping-btn">
+                        Browse Products
+                    </a>
+
+                </div>
+
             `;
+
+            document.getElementById("checkoutTotal").innerHTML = "";
 
             return;
         }
 
+
         let html = "";
+
+
+        /* Display Items */
 
         data.items.forEach(item => {
 
+            let image = item.image
+                ? "../assets/images/products/" + item.image
+                : "../assets/images/no-image.png";
+
+
             html += `
+
                 <div class="checkout-item">
 
-                    <div>
-                        <strong>${item.title}</strong>
-                        <br>
-                        Quantity: ${item.quantity}
+                    <div class="checkout-product">
+
+                        <div class="checkout-image">
+
+                            <img
+                                src="${image}"
+                                alt="${item.title}"
+                            >
+
+                        </div>
+
+
+                        <div class="checkout-product-info">
+
+                            <h3>
+                                ${item.title}
+                            </h3>
+
+                            <p>
+                                Price:
+                                Rs. ${Number(item.price).toFixed(2)}
+                            </p>
+
+                            <p>
+                                Quantity:
+                                ${item.quantity}
+                            </p>
+
+                        </div>
+
                     </div>
 
-                    <div>
+
+                    <div class="checkout-subtotal">
+
                         Rs. ${Number(item.subtotal).toFixed(2)}
+
                     </div>
 
                 </div>
+
             `;
 
         });
 
+
         document.getElementById("checkoutItems").innerHTML = html;
 
+
+        /* Total */
+
         document.getElementById("checkoutTotal").innerHTML = `
+
             <div class="checkout-total">
-                Total: Rs. ${Number(data.total).toFixed(2)}
+
+                <span>
+                    Total
+                </span>
+
+                <strong>
+                    Rs. ${Number(data.total).toFixed(2)}
+                </strong>
+
             </div>
+
         `;
+
+
+        /* Show Confirm Button */
 
         document.getElementById("confirmButton").style.display =
             "block";
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(error);
 
-        document.getElementById("checkoutItems").innerHTML =
-            "<p>Something went wrong.</p>";
+        document.getElementById("checkoutItems").innerHTML = `
+
+            <div class="checkout-message">
+
+                <h3>Something went wrong</h3>
+
+                <p>
+                    Unable to load your order summary.
+                </p>
+
+            </div>
+
+        `;
+
     }
+
 }
 
+
+/* ============================= */
+/* Confirm Order                 */
+/* ============================= */
 
 async function confirmOrder() {
 
     const button =
         document.getElementById("confirmButton");
 
+
     button.disabled = true;
+
     button.innerText = "Processing...";
+
 
     try {
 
@@ -211,37 +325,54 @@ async function confirmOrder() {
                 body: JSON.stringify({})
             });
 
+
         const data =
             await response.json();
+
 
         if (data.success) {
 
             window.location.href =
                 "order-success.php?order_id=" + data.order_id;
 
-        } else {
+        }
+
+        else {
 
             alert(data.message);
 
             button.disabled = false;
+
             button.innerText = "Confirm Purchase";
+
         }
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(error);
 
-        alert("Something went wrong while creating your order.");
+        alert(
+            "Something went wrong while creating your order."
+        );
 
         button.disabled = false;
+
         button.innerText = "Confirm Purchase";
+
     }
+
 }
 
+
+/* Load Checkout */
 
 loadCheckout();
 
 </script>
 
+
 </body>
+
 </html>
