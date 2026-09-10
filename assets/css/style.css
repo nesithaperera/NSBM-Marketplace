@@ -907,3 +907,204 @@
     }
 
 }
+
+/* ============================= */
+/* Order Success Page             */
+/* ============================= */
+
+.success-page {
+    min-height: 65vh;
+    display: flex;
+    align-items: center;
+}
+
+.success-container {
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.success-box {
+    background: white;
+    padding: 50px 35px;
+    border-radius: 16px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+/* Success Icon */
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+
+    margin: 0 auto 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e8f5ee;
+
+    color: #006b3c;
+
+    font-size: 50px;
+    font-weight: bold;
+}
+
+
+/* Heading */
+
+.success-box h1 {
+    margin-bottom: 15px;
+
+    color: #006b3c;
+
+    font-size: 32px;
+}
+
+
+/* Message */
+
+.success-message {
+    max-width: 500px;
+
+    margin: 0 auto;
+
+    color: #666;
+
+    line-height: 1.6;
+}
+
+
+/* Order Number */
+
+.order-number {
+    display: inline-flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    margin: 30px auto;
+
+    padding: 15px 30px;
+
+    background: #f5f7f9;
+
+    border-radius: 10px;
+}
+
+.order-number span {
+    color: #777;
+
+    font-size: 14px;
+}
+
+.order-number strong {
+    color: #333;
+
+    font-size: 22px;
+}
+
+
+/* Buttons */
+
+.success-actions {
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+.success-btn {
+    display: inline-block;
+
+    padding: 12px 20px;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition: opacity 0.2s;
+}
+
+.success-btn:hover {
+    opacity: 0.85;
+}
+
+
+/* Primary */
+
+.primary-btn {
+    background: #006b3c;
+
+    color: white;
+}
+
+
+/* Secondary */
+
+.secondary-btn {
+    background: #333;
+
+    color: white;
+}
+
+
+/* Outline */
+
+.outline-btn {
+    background: white;
+
+    color: #006b3c;
+
+    border: 1px solid #006b3c;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .success-container {
+        padding: 35px 15px;
+    }
+
+    .success-box {
+        padding: 40px 20px;
+    }
+
+    .success-box h1 {
+        font-size: 26px;
+    }
+
+    .success-icon {
+        width: 70px;
+        height: 70px;
+
+        font-size: 42px;
+    }
+
+    .success-actions {
+        flex-direction: column;
+    }
+
+    .success-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+}
