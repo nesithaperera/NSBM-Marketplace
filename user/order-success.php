@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 if (!isset($_SESSION["user_id"])) {
@@ -9,6 +10,7 @@ if (!isset($_SESSION["user_id"])) {
 $order_id = isset($_GET["order_id"])
     ? intval($_GET["order_id"])
     : 0;
+
 ?>
 
 <!DOCTYPE html>
@@ -27,112 +29,98 @@ $order_id = isset($_GET["order_id"])
 
     <link rel="stylesheet" href="../assets/css/style.css">
 
-    <style>
-
-        .success-container {
-            max-width: 700px;
-            margin: 80px auto;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .success-box {
-            background: white;
-            padding: 50px 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .success-icon {
-            font-size: 70px;
-            margin-bottom: 20px;
-        }
-
-        .success-box h1 {
-            color: #006b3c;
-        }
-
-        .order-number {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .success-btn {
-            display: inline-block;
-            padding: 12px 22px;
-            margin: 8px;
-            border-radius: 7px;
-            text-decoration: none;
-            background: #006b3c;
-            color: white;
-        }
-
-        .secondary-btn {
-            background: #333;
-        }
-
-    </style>
-
 </head>
 
 <body>
 
 <?php include "../includes/header.php"; ?>
 
-<div class="success-container">
 
-    <div class="success-box">
+<main class="success-page">
 
-        <div class="success-icon">
-            ✅
-        </div>
+    <div class="success-container">
 
-        <h1>
-            Order Placed Successfully!
-        </h1>
+        <div class="success-box">
 
-        <p>
-            Thank you for shopping at NSBM Marketplace.
-        </p>
+            <!-- Success Icon -->
 
-        <?php if ($order_id > 0): ?>
-
-            <div class="order-number">
-                Order #<?php echo htmlspecialchars($order_id); ?>
+            <div class="success-icon">
+                ✓
             </div>
 
-        <?php endif; ?>
 
-        <p>
-            Your order has been successfully recorded.
-        </p>
+            <!-- Message -->
 
-        <?php if ($order_id > 0): ?>
+            <h1>
+                Order Placed Successfully!
+            </h1>
 
-            <a
-                href="order-details.php?order_id=<?php echo $order_id; ?>"
-                class="success-btn">
-                View Order
-            </a>
+            <p class="success-message">
+                Thank you for shopping at NSBM Marketplace.
+                Your order has been successfully recorded.
+            </p>
 
-        <?php endif; ?>
 
-        <a
-            href="purchases.php"
-            class="success-btn secondary-btn">
-            My Orders
-        </a>
+            <!-- Order Number -->
 
-        <a
-            href="../index.php"
-            class="success-btn">
-            Continue Shopping
-        </a>
+            <?php if ($order_id > 0): ?>
+
+                <div class="order-number">
+
+                    <span>Order ID</span>
+
+                    <strong>
+                        #<?php echo htmlspecialchars($order_id); ?>
+                    </strong>
+
+                </div>
+
+            <?php endif; ?>
+
+
+            <!-- Buttons -->
+
+            <div class="success-actions">
+
+                <?php if ($order_id > 0): ?>
+
+                    <a
+                        href="order-details.php?order_id=<?php echo $order_id; ?>"
+                        class="success-btn primary-btn"
+                    >
+                        📦 View Order
+                    </a>
+
+                <?php endif; ?>
+
+
+                <a
+                    href="purchases.php"
+                    class="success-btn secondary-btn"
+                >
+                    🧾 My Orders
+                </a>
+
+
+                <a
+                    href="../products.php"
+                    class="success-btn outline-btn"
+                >
+                    🛍️ Continue Shopping
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
+</main>
+
+
+<?php include "../includes/footer.php"; ?>
+
 
 </body>
+
 </html>
