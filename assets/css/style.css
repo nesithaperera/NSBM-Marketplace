@@ -142,3 +142,25 @@
 .feature-card a:hover {
     opacity: 0.9;
 }
+
+
+/* ============================= */
+/* Footer                        */
+/* ============================= */
+
+.site-footer {
+    background: #006b3c;
+    color: white;
+    margin-top: 50px;
+    padding: 25px 20px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.footer-container p {
+    margin: 5px 0;
+}
