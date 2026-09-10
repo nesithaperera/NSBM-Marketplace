@@ -1,10 +1,8 @@
 <?php
-session_start();
 
-if (!isset($_SESSION["user_id"])) {
-    header("Location: ../login.php");
-    exit;
-}
+require_once "../includes/auth.php";
+require_once "../config/database.php";
+
 ?>
 
 <!DOCTYPE html>
@@ -23,58 +21,153 @@ if (!isset($_SESSION["user_id"])) {
 
         .orders-container {
             max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
+            margin: 50px auto;
+            padding: 0 20px;
         }
 
-        .orders-title {
+        .orders-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
+        }
+
+        .orders-header h1 {
+            margin-bottom: 8px;
+        }
+
+        .orders-header p {
+            color: #666;
+            margin: 0;
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
         }
 
         .order-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
+            background: #ffffff;
+            padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
+        }
+
+        .order-info {
+            flex: 1;
         }
 
         .order-info h3 {
-            margin-top: 0;
+            margin: 0 0 12px;
+        }
+
+        .order-info p {
+            margin: 7px 0;
+            color: #666;
+        }
+
+        .order-total {
+            margin-top: 12px;
+            font-size: 17px;
+            color: #006b3c;
+        }
+
+        .order-actions {
+            min-width: 150px;
+            text-align: center;
         }
 
         .order-status {
-            padding: 6px 12px;
+            display: inline-block;
+            padding: 6px 13px;
             border-radius: 20px;
-            background: #e7f5ed;
+            font-weight: 600;
+            margin: 0 0 12px;
+            text-transform: capitalize;
+        }
+
+        .status-completed {
+            background: #e8f5ee;
             color: #006b3c;
-            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fff4d6;
+            color: #8a5a00;
+        }
+
+        .status-cancelled {
+            background: #fff0f0;
+            color: #b42318;
         }
 
         .view-btn {
+            display: inline-block;
             background: #006b3c;
             color: white;
             text-decoration: none;
             padding: 10px 18px;
-            border-radius: 6px;
+            border-radius: 7px;
+            font-weight: 600;
+        }
+
+        .view-btn:hover {
+            opacity: 0.9;
         }
 
         .empty-orders {
+            background: #ffffff;
             text-align: center;
-            padding: 50px;
+            padding: 60px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
 
-        @media(max-width: 650px) {
+        .empty-orders h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty-orders p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .error-message {
+            background: #fff3f3;
+            color: #b42318;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+
+            .orders-container {
+                margin: 30px auto;
+            }
 
             .order-card {
                 flex-direction: column;
                 text-align: center;
+            }
+
+            .order-actions {
+                width: 100%;
+            }
+
+            .view-btn {
+                width: 100%;
+                box-sizing: border-box;
             }
 
         }
@@ -87,22 +180,40 @@ if (!isset($_SESSION["user_id"])) {
 
 <?php include "../includes/header.php"; ?>
 
-<div class="orders-container">
 
-    <h1 class="orders-title">
-        📦 My Orders
-    </h1>
+<main class="orders-container">
 
-    <div id="ordersList">
-        Loading orders...
+    <div class="orders-header">
+
+        <h1>📦 My Orders</h1>
+
+        <p>
+            View your previous purchases and order details.
+        </p>
+
     </div>
 
-</div>
+
+    <div id="ordersList" class="orders-list">
+
+        <div class="loading-message">
+            Loading orders...
+        </div>
+
+    </div>
+
+</main>
+
+
+<?php include "../includes/footer.php"; ?>
 
 
 <script>
 
 async function loadOrders() {
+
+    const ordersList =
+        document.getElementById("ordersList");
 
     try {
 
@@ -112,20 +223,23 @@ async function loadOrders() {
         const data =
             await response.json();
 
-        const ordersList =
-            document.getElementById("ordersList");
 
         if (!data.success) {
 
-            ordersList.innerHTML =
-                "<p>Unable to load orders.</p>";
+            ordersList.innerHTML = `
+                <div class="error-message">
+                    Unable to load your orders.
+                </div>
+            `;
 
             return;
         }
 
-        if (data.orders.length === 0) {
+
+        if (!data.orders || data.orders.length === 0) {
 
             ordersList.innerHTML = `
+
                 <div class="empty-orders">
 
                     <h2>No orders yet 📦</h2>
@@ -134,19 +248,49 @@ async function loadOrders() {
                         You haven't purchased anything yet.
                     </p>
 
-                    <a href="../index.php" class="view-btn">
+                    <a
+                        href="../products.php"
+                        class="view-btn">
                         Start Shopping
                     </a>
 
                 </div>
+
             `;
 
             return;
         }
 
+
         let html = "";
 
+
         data.orders.forEach(order => {
+
+            const status =
+                String(order.status || "").toLowerCase();
+
+            let statusClass = "status-pending";
+
+            if (status === "completed") {
+                statusClass = "status-completed";
+            } else if (status === "cancelled") {
+                statusClass = "status-cancelled";
+            }
+
+
+            const orderDate =
+                new Date(order.created_at)
+                    .toLocaleString();
+
+
+            const orderCount =
+                Number(order.order_count || 0);
+
+
+            const total =
+                Number(order.total_amount || 0);
+
 
             html += `
 
@@ -159,27 +303,32 @@ async function loadOrders() {
                         </h3>
 
                         <p>
-                            Date:
-                            ${new Date(order.created_at).toLocaleString()}
+                            <strong>Date:</strong>
+                            ${orderDate}
                         </p>
 
                         <p>
-                            Items:
-                            ${order.order_count}
+                            <strong>Items:</strong>
+                            ${orderCount}
                         </p>
 
-                        <strong>
-                            Total:
-                            Rs. ${Number(order.total_amount).toFixed(2)}
-                        </strong>
+                        <p class="order-total">
+                            <strong>
+                                Total:
+                                Rs. ${total.toFixed(2)}
+                            </strong>
+                        </p>
 
                     </div>
 
-                    <div>
 
-                        <p class="order-status">
-                            ${order.status}
+                    <div class="order-actions">
+
+                        <p class="order-status ${statusClass}">
+                            ${status || "Unknown"}
                         </p>
+
+                        <br>
 
                         <a
                             href="order-details.php?order_id=${order.order_id}"
@@ -195,20 +344,29 @@ async function loadOrders() {
 
         });
 
+
         ordersList.innerHTML = html;
+
 
     } catch (error) {
 
         console.error(error);
 
-        document.getElementById("ordersList").innerHTML =
-            "<p>Something went wrong.</p>";
+        ordersList.innerHTML = `
+
+            <div class="error-message">
+                Something went wrong while loading your orders.
+            </div>
+
+        `;
     }
 }
+
 
 loadOrders();
 
 </script>
 
 </body>
+
 </html>
