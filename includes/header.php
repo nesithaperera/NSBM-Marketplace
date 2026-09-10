@@ -4,13 +4,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+$base_url = "/NSBM-Marketplace/";
+
 ?>
 
 <header class="site-header">
 
     <div class="nav-container">
 
-        <a href="../index.php" class="logo">
+        <a href="<?php echo $base_url; ?>index.php" class="logo">
             NSBM Marketplace
         </a>
 
@@ -20,36 +22,93 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <!-- Guest Navigation -->
 
-                <a href="../index.php">Home</a>
-                <a href="../products.php">Products</a>
-                <a href="../login.php">Login</a>
-                <a href="../register.php">Register</a>
+                <a href="<?php echo $base_url; ?>index.php">
+                    Home
+                </a>
+
+                <a href="<?php echo $base_url; ?>products.php">
+                    Products
+                </a>
+
+                <a href="<?php echo $base_url; ?>login.php">
+                    Login
+                </a>
+
+                <a href="<?php echo $base_url; ?>register.php">
+                    Register
+                </a>
 
             <?php } elseif ($_SESSION["user_role"] === "admin") { ?>
 
                 <!-- Admin Navigation -->
 
-                <a href="../admin/dashboard.php">Dashboard</a>
-                <a href="../admin/users.php">Users</a>
-                <a href="../admin/products.php">Products</a>
-                <a href="../admin/categories.php">Categories</a>
-                <a href="../admin/orders.php">Orders</a>
-                <a href="../admin/reports.php">Reports</a>
-                <a href="../logout.php">Logout</a>
+                <a href="<?php echo $base_url; ?>admin/dashboard.php">
+                    Dashboard
+                </a>
+
+                <a href="<?php echo $base_url; ?>admin/users.php">
+                    Users
+                </a>
+
+                <a href="<?php echo $base_url; ?>admin/products.php">
+                    Products
+                </a>
+
+                <a href="<?php echo $base_url; ?>admin/categories.php">
+                    Categories
+                </a>
+
+                <a href="<?php echo $base_url; ?>admin/orders.php">
+                    Orders
+                </a>
+
+                <a href="<?php echo $base_url; ?>admin/reports.php">
+                    Reports
+                </a>
+
+                <a href="<?php echo $base_url; ?>logout.php">
+                    Logout
+                </a>
 
             <?php } else { ?>
 
                 <!-- User Navigation -->
 
-                <a href="../index.php">Home</a>
-                <a href="../products.php">Products</a>
-                <a href="../user/dashboard.php">Dashboard</a>
-                <a href="../user/add-product.php">Add Product</a>
-                <a href="../user/mylisting.php">My Listings</a>
-                <a href="../user/cart.php">🛒 Cart</a>
-                <a href="../user/purchases.php">My Orders</a>
-                <a href="../user/profile.php">Profile</a>
-                <a href="../logout.php">Logout</a>
+                <a href="<?php echo $base_url; ?>index.php">
+                    Home
+                </a>
+
+                <a href="<?php echo $base_url; ?>products.php">
+                    Products
+                </a>
+
+                <a href="<?php echo $base_url; ?>user/dashboard.php">
+                    Dashboard
+                </a>
+
+                <a href="<?php echo $base_url; ?>user/add-product.php">
+                    Add Product
+                </a>
+
+                <a href="<?php echo $base_url; ?>user/mylisting.php">
+                    My Listings
+                </a>
+
+                <a href="<?php echo $base_url; ?>user/cart.php">
+                    🛒 Cart
+                </a>
+
+                <a href="<?php echo $base_url; ?>user/purchases.php">
+                    My Orders
+                </a>
+
+                <a href="<?php echo $base_url; ?>user/profile.php">
+                    Profile
+                </a>
+
+                <a href="<?php echo $base_url; ?>logout.php">
+                    Logout
+                </a>
 
             <?php } ?>
 
