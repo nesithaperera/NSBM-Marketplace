@@ -1930,3 +1930,497 @@ body {
 
     box-shadow: 0 0 0 2px rgba(0, 107, 60, 0.1);
 }
+
+/* =========================================================
+   NSBM MARKETPLACE HOMEPAGE
+========================================================= */
+
+.market-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.market-hero {
+    background:
+        linear-gradient(
+            135deg,
+            #006837 0%,
+            #004d28 100%
+        );
+
+    color: white;
+
+    padding: 90px 0;
+
+    min-height: 500px;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.hero-content {
+    max-width: 720px;
+}
+
+
+.hero-badge {
+    display: inline-block;
+
+    background: rgba(255,255,255,0.12);
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    padding: 8px 15px;
+
+    border-radius: 30px;
+
+    font-size: 14px;
+
+    margin-bottom: 20px;
+}
+
+
+.hero-content h1 {
+    font-size: 52px;
+
+    line-height: 1.15;
+
+    margin: 0 0 20px;
+
+    color: white;
+}
+
+
+.hero-content h1 span {
+    display: block;
+
+    color: #8cc63f;
+}
+
+
+.hero-content p {
+    max-width: 650px;
+
+    font-size: 18px;
+
+    line-height: 1.7;
+
+    color: rgba(255,255,255,0.85);
+
+    margin-bottom: 30px;
+}
+
+
+.hero-actions {
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+
+.hero-primary-btn,
+.hero-secondary-btn {
+    display: inline-block;
+
+    padding: 13px 22px;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+
+.hero-primary-btn {
+    background: #8cc63f;
+
+    color: #1f2937;
+}
+
+
+.hero-primary-btn:hover {
+    background: #7ab332;
+
+    transform: translateY(-2px);
+}
+
+
+.hero-secondary-btn {
+    background: transparent;
+
+    color: white;
+
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+
+.hero-secondary-btn:hover {
+    background: white;
+
+    color: #006837;
+}
+
+
+/* =========================
+   SECTION HEADING
+========================= */
+
+.quick-section {
+    padding: 75px 0;
+}
+
+
+.section-heading {
+    text-align: center;
+
+    max-width: 650px;
+
+    margin: 0 auto 45px;
+}
+
+
+.section-heading span {
+    color: #006837;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+
+.section-heading h2 {
+    font-size: 34px;
+
+    margin: 8px 0;
+}
+
+
+.section-heading p {
+    color: #6b7280;
+
+    margin: 0;
+}
+
+
+/* =========================
+   QUICK CARDS
+========================= */
+
+.quick-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+
+    gap: 22px;
+}
+
+
+.quick-card {
+    background: var(--card-bg, #ffffff);
+
+    border: 1px solid var(--border-color, #e5e7eb);
+
+    border-radius: 12px;
+
+    padding: 28px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.06);
+
+    transition: 0.3s;
+}
+
+
+.quick-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.1);
+}
+
+
+.quick-icon {
+    width: 52px;
+
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(140,198,63,0.15);
+
+    border-radius: 12px;
+
+    font-size: 25px;
+
+    margin-bottom: 18px;
+}
+
+
+.quick-card h3 {
+    margin: 0 0 10px;
+
+    font-size: 20px;
+}
+
+
+.quick-card p {
+    color: var(--text-muted, #6b7280);
+
+    line-height: 1.6;
+
+    margin-bottom: 20px;
+}
+
+
+.quick-card a {
+    color: #006837;
+
+    font-weight: bold;
+
+    text-decoration: none;
+}
+
+
+.quick-card a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   INFO SECTION
+========================= */
+
+.market-info {
+    padding: 20px 0 80px;
+}
+
+
+.info-card {
+    background:
+        linear-gradient(
+            135deg,
+            #f0fdf4,
+            #ffffff
+        );
+
+    border: 1px solid #d1fae5;
+
+    border-radius: 16px;
+
+    padding: 45px;
+
+    display: grid;
+
+    grid-template-columns:
+        1.3fr 1fr;
+
+    gap: 50px;
+
+    align-items: center;
+}
+
+
+.info-label {
+    color: #006837;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+
+.info-content h2 {
+    font-size: 34px;
+
+    margin: 10px 0 15px;
+
+    color: #1f2937;
+}
+
+
+.info-content p {
+    color: #6b7280;
+
+    max-width: 600px;
+
+    line-height: 1.7;
+
+    margin-bottom: 25px;
+}
+
+
+.info-button {
+    display: inline-block;
+
+    background: #006837;
+
+    color: white;
+
+    padding: 12px 20px;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-weight: bold;
+}
+
+
+.info-button:hover {
+    background: #004d28;
+}
+
+
+.info-features {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+}
+
+
+.info-features div {
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    padding: 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.info-features strong {
+    font-size: 24px;
+}
+
+
+.info-features span {
+    font-weight: bold;
+
+    color: #374151;
+}
+
+
+/* =========================
+   DARK MODE
+========================= */
+
+html[data-theme="dark"] .info-card {
+    background: #1f2937;
+
+    border-color: #374151;
+}
+
+
+html[data-theme="dark"] .info-content h2 {
+    color: #f9fafb;
+}
+
+
+html[data-theme="dark"] .info-features div {
+    background: #111827;
+
+    border-color: #374151;
+}
+
+
+html[data-theme="dark"] .info-features span {
+    color: #f9fafb;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    .market-hero {
+        padding: 65px 0;
+    }
+
+
+    .hero-content h1 {
+        font-size: 38px;
+    }
+
+
+    .hero-content p {
+        font-size: 16px;
+    }
+
+
+    .info-card {
+        grid-template-columns: 1fr;
+
+        padding: 30px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .market-container {
+        width: 92%;
+    }
+
+
+    .hero-content h1 {
+        font-size: 32px;
+    }
+
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+
+    .hero-primary-btn,
+    .hero-secondary-btn {
+        text-align: center;
+
+        width: 100%;
+    }
+
+
+    .section-heading h2 {
+        font-size: 28px;
+    }
+
+
+    .info-features {
+        grid-template-columns: 1fr;
+    }
+
+}
