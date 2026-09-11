@@ -1948,3 +1948,326 @@ textarea {
     color: #777;
     font-size: 14px;
 }
+
+
+/* =========================================================
+   MY LISTINGS
+========================================================= */
+
+.my-listings-page {
+    min-height: 65vh;
+    padding: 45px 20px;
+}
+
+.my-listings-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.my-listings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.listings-label {
+    color: #006837;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.my-listings-header h1 {
+    margin: 8px 0 10px;
+    font-size: 36px;
+}
+
+.my-listings-header p {
+    margin: 0;
+    color: #6b7280;
+}
+
+.add-listing-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #006b3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.add-listing-btn:hover {
+    background: #00552f;
+}
+
+
+/* =========================================================
+   LISTINGS GRID
+========================================================= */
+
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+
+/* =========================================================
+   LISTING CARD
+========================================================= */
+
+.listing-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eeeeee;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
+
+.listing-image {
+    width: 100%;
+    height: 210px;
+    background: #f3f4f6;
+    overflow: hidden;
+}
+
+.listing-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.listing-no-image {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CARD CONTENT
+========================================================= */
+
+.listing-content {
+    padding: 20px;
+}
+
+.listing-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.listing-category {
+    font-size: 13px;
+    color: #006837;
+    font-weight: 600;
+}
+
+.listing-status {
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   STATUS COLORS
+========================================================= */
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-sold {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+
+.listing-content h2 {
+    margin: 0 0 10px;
+    font-size: 21px;
+    color: #222;
+}
+
+.listing-description {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 45px;
+    margin: 0 0 15px;
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.listing-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #006837;
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   DETAILS
+========================================================= */
+
+.listing-details {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 12px 0;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 13px;
+    color: #666;
+}
+
+.listing-details strong {
+    color: #333;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.listing-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 17px;
+}
+
+.listing-edit-btn,
+.listing-delete-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.listing-edit-btn {
+    background: #006b3c;
+    color: white;
+}
+
+.listing-edit-btn:hover {
+    background: #00552f;
+}
+
+.listing-delete-btn {
+    background: #f3f4f6;
+    color: #b91c1c;
+}
+
+.listing-delete-btn:hover {
+    background: #fee2e2;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-listings {
+    background: white;
+    border-radius: 14px;
+    padding: 70px 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.empty-listings-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.empty-listings h2 {
+    margin: 0 0 10px;
+    font-size: 25px;
+}
+
+.empty-listings p {
+    color: #6b7280;
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .listings-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .my-listings-page {
+        padding: 30px 15px;
+    }
+
+    .my-listings-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .my-listings-header h1 {
+        font-size: 30px;
+    }
+
+    .add-listing-btn {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .listings-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
