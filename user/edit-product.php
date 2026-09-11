@@ -287,267 +287,370 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Edit Product</title>
+    <title>Edit Product - NSBM Marketplace</title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
 
 </head>
 
-
 <body>
 
-    <h1>Edit Product</h1>
+    <?php include "../includes/header.php"; ?>
 
 
-    <!-- ==============================================
-         MESSAGE
-    =============================================== -->
+    <main class="product-form-page">
 
-    <?php if ($message != "") { ?>
-
-        <p>
-            <?php
-            echo htmlspecialchars($message);
-            ?>
-        </p>
-
-    <?php } ?>
+        <div class="product-form-container">
 
 
-    <!-- ==============================================
-         EDIT PRODUCT FORM
-    =============================================== -->
+            <!-- =========================================
+                 PAGE HEADER
+            ========================================== -->
 
-    <form
-        method="POST"
-        enctype="multipart/form-data"
-    >
+            <div class="product-form-header">
 
+                <span class="form-label">
+                    MANAGE YOUR LISTING
+                </span>
 
-        <!-- PRODUCT TITLE -->
+                <h1>Edit Product</h1>
 
-        <label>Product Title:</label>
+                <p>
+                    Update your product information and submit
+                    the changes for admin approval.
+                </p>
 
-        <br>
-
-        <input
-            type="text"
-            name="title"
-            value="<?php
-                echo htmlspecialchars($product["title"]);
-            ?>"
-            required
-        >
-
-        <br><br>
+            </div>
 
 
-        <!-- DESCRIPTION -->
+            <!-- =========================================
+                 MESSAGE
+            ========================================== -->
 
-        <label>Description:</label>
+            <?php if ($message != "") { ?>
 
-        <br>
+                <div class="form-message">
 
-        <textarea
-            name="description"
-            rows="5"
-            required
-        ><?php
-            echo htmlspecialchars($product["description"]);
-        ?></textarea>
+                    <?php
+                    echo htmlspecialchars($message);
+                    ?>
 
-        <br><br>
+                </div>
 
-
-        <!-- CATEGORY -->
-
-        <label>Category:</label>
-
-        <br>
-
-        <select
-            name="category_id"
-            required
-        >
-
-            <option value="">
-                Select Category
-            </option>
+            <?php } ?>
 
 
-            <?php
+            <!-- =========================================
+                 EDIT PRODUCT FORM
+            ========================================== -->
 
-            $category_sql = "SELECT id, name
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                class="product-form"
+            >
+
+
+                <!-- PRODUCT TITLE -->
+
+                <div class="form-group">
+
+                    <label for="title">
+                        Product Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value="<?php
+                            echo htmlspecialchars(
+                                $product["title"]
+                            );
+                        ?>"
+                        placeholder="Enter product title"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="6"
+                        placeholder="Describe your product..."
+                        required
+                    ><?php
+                        echo htmlspecialchars(
+                            $product["description"]
+                        );
+                    ?></textarea>
+
+                </div>
+
+
+                <!-- CATEGORY -->
+
+                <div class="form-group">
+
+                    <label for="category_id">
+                        Category
+                    </label>
+
+                    <select
+                        id="category_id"
+                        name="category_id"
+                        required
+                    >
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+
+                        <?php
+
+                        $category_sql =
+                            "SELECT id, name
                              FROM categories
                              WHERE status = 'active'
                              ORDER BY name ASC";
 
-            $category_result =
-                $conn->query($category_sql);
+                        $category_result =
+                            $conn->query($category_sql);
 
 
-            while (
-                $category =
-                $category_result->fetch_assoc()
-            ) {
+                        while (
+                            $category =
+                            $category_result->fetch_assoc()
+                        ) {
 
-            ?>
+                        ?>
 
-                <option
-                    value="<?php
-                        echo $category["id"];
-                    ?>"
+                            <option
+                                value="<?php
+                                    echo $category["id"];
+                                ?>"
+                                <?php
+
+                                if (
+                                    $category["id"] ==
+                                    $product["category_id"]
+                                ) {
+
+                                    echo "selected";
+
+                                }
+
+                                ?>
+                            >
+
+                                <?php
+                                echo htmlspecialchars(
+                                    $category["name"]
+                                );
+                                ?>
+
+                            </option>
+
+                        <?php } ?>
+
+                    </select>
+
+                </div>
+
+
+                <!-- PRICE + QUANTITY -->
+
+                <div class="form-row">
+
+
+                    <!-- PRICE -->
+
+                    <div class="form-group">
+
+                        <label for="price">
+                            Price (LKR)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="price"
+                            name="price"
+                            step="0.01"
+                            min="0.01"
+                            value="<?php
+                                echo htmlspecialchars(
+                                    $product["price"]
+                                );
+                            ?>"
+                            placeholder="0.00"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- QUANTITY -->
+
+                    <div class="form-group">
+
+                        <label for="quantity">
+                            Quantity
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            min="1"
+                            step="1"
+                            value="<?php
+                                echo htmlspecialchars(
+                                    $product["quantity"]
+                                );
+                            ?>"
+                            placeholder="1"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOCATION -->
+
+                <div class="form-group">
+
+                    <label for="location">
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        value="<?php
+                            echo htmlspecialchars(
+                                $product["location"]
+                            );
+                        ?>"
+                        placeholder="Enter your location"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- CURRENT IMAGE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Current Product Image
+                    </label>
+
+
                     <?php
 
                     if (
-                        $category["id"] ==
-                        $product["category_id"]
+                        !empty($product["image"]) &&
+                        $product["image"] != "null"
                     ) {
 
-                        echo "selected";
-                    }
-
                     ?>
-                >
+
+                        <div class="current-product-image">
+
+                            <img
+                                src="../assets/images/products/<?php
+                                    echo htmlspecialchars(
+                                        $product["image"]
+                                    );
+                                ?>"
+                                alt="Current Product Image"
+                            >
+
+                        </div>
 
                     <?php
-                    echo htmlspecialchars(
-                        $category["name"]
-                    );
+
+                    } else {
+
                     ?>
 
-                </option>
+                        <p class="no-product-image">
+                            No product image uploaded.
+                        </p>
 
-            <?php } ?>
+                    <?php } ?>
 
-        </select>
-
-        <br><br>
-
-
-        <!-- PRICE -->
-
-        <label>Price:</label>
-
-        <br>
-
-        <input
-            type="number"
-            name="price"
-            step="0.01"
-            min="0.01"
-            value="<?php
-                echo htmlspecialchars($product["price"]);
-            ?>"
-            required
-        >
-
-        <br><br>
+                </div>
 
 
-        <!-- QUANTITY -->
+                <!-- NEW IMAGE -->
 
-        <label>Quantity:</label>
+                <div class="form-group">
 
-        <br>
+                    <label for="image">
+                        Replace Product Image
+                    </label>
 
-        <input
-            type="number"
-            name="quantity"
-            min="1"
-            step="1"
-            value="<?php
-                echo htmlspecialchars($product["quantity"]);
-            ?>"
-            required
-        >
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept=".jpg,.jpeg,.png,.gif"
+                    >
 
-        <br><br>
+                    <small class="form-help">
+                        Leave this empty if you want to keep
+                        the current image.
+                        JPG, JPEG, PNG or GIF images are allowed.
+                    </small>
 
-
-        <!-- LOCATION -->
-
-        <label>Location:</label>
-
-        <br>
-
-        <input
-            type="text"
-            name="location"
-            value="<?php
-                echo htmlspecialchars($product["location"]);
-            ?>"
-            required
-        >
-
-        <br><br>
+                </div>
 
 
-        <!-- PRODUCT IMAGE -->
+                <!-- ACTION BUTTONS -->
 
-        <label>Product Image:</label>
+                <div class="form-actions">
 
-        <br>
-
-
-        <?php
-
-        if (
-            !empty($product["image"]) &&
-            $product["image"] != "null"
-        ) {
-
-        ?>
-
-            <p>Current Image:</p>
-
-            <img
-                src="../assets/images/products/<?php
-                    echo htmlspecialchars(
-                        $product["image"]
-                    );
-                ?>"
-                width="200"
-                alt="Current Product Image"
-            >
-
-            <br><br>
-
-        <?php } ?>
+                    <button
+                        type="submit"
+                        class="form-submit-btn"
+                    >
+                        Update Product
+                    </button>
 
 
-        <input
-            type="file"
-            name="image"
-            accept=".jpg,.jpeg,.png,.gif"
-        >
+                    <a
+                        href="mylisting.php"
+                        class="form-cancel-btn"
+                    >
+                        Back to My Listings
+                    </a>
 
-        <br>
+                </div>
 
-        <small>
-            Leave this empty if you want to keep
-            the current image.
-        </small>
+            </form>
 
-        <br><br>
+        </div>
 
-
-        <!-- SUBMIT -->
-
-        <button type="submit">
-            Update Product
-        </button>
-
-    </form>
+    </main>
 
 
-    <br>
-
-
-    <!-- BACK -->
-
-    <a href="mylisting.php">
-        Back to My Listings
-    </a>
-
+    <?php include "../includes/footer.php"; ?>
 
 </body>
 
