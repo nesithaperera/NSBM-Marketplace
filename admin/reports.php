@@ -14,9 +14,7 @@ $sales_sql = "SELECT
               WHERE status = 'completed'";
 
 $sales_result = $conn->query($sales_sql);
-
 $sales_data = $sales_result->fetch_assoc();
-
 $total_sales = $sales_data["total_sales"];
 
 
@@ -30,9 +28,7 @@ $orders_sql = "SELECT
                WHERE status = 'completed'";
 
 $orders_result = $conn->query($orders_sql);
-
 $orders_data = $orders_result->fetch_assoc();
-
 $total_orders = $orders_data["total_orders"];
 
 
@@ -48,9 +44,7 @@ $items_sql = "SELECT
               WHERE orders.status = 'completed'";
 
 $items_result = $conn->query($items_sql);
-
 $items_data = $items_result->fetch_assoc();
-
 $total_items = $items_data["total_items"];
 
 
@@ -64,9 +58,7 @@ $cancelled_sql = "SELECT
                   WHERE status = 'cancelled'";
 
 $cancelled_result = $conn->query($cancelled_sql);
-
 $cancelled_data = $cancelled_result->fetch_assoc();
-
 $cancelled_orders = $cancelled_data["cancelled_orders"];
 
 
@@ -80,9 +72,7 @@ $pending_sql = "SELECT
                 WHERE status = 'pending'";
 
 $pending_result = $conn->query($pending_sql);
-
 $pending_data = $pending_result->fetch_assoc();
-
 $pending_orders = $pending_data["pending_orders"];
 
 ?>
@@ -99,223 +89,318 @@ $pending_orders = $pending_data["pending_orders"];
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Sales Reports</title>
+    <title>Sales Reports - NSBM Marketplace</title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
 
 </head>
 
-
 <body>
 
-    <h1>
-        Sales Reports
-    </h1>
+    <?php include "../includes/header.php"; ?>
 
-    <p>
-        View marketplace sales statistics.
-    </p>
 
+    <main class="admin-reports-page">
 
-    <!-- ==================================================
-         ADMIN NAVIGATION
-    =================================================== -->
+        <div class="admin-reports-container">
 
-    <p>
 
-        <a href="dashboard.php">
-            Dashboard
-        </a>
+            <!-- =========================================
+                 PAGE HEADER
+            ========================================== -->
 
-        |
+            <div class="admin-reports-header">
 
-        <a href="users.php">
-            Users
-        </a>
+                <span class="admin-reports-label">
+                    ADMINISTRATION
+                </span>
 
-        |
+                <h1>
+                    Sales Reports
+                </h1>
 
-        <a href="products.php">
-            Products
-        </a>
+                <p>
+                    View marketplace sales statistics
+                    and order performance.
+                </p>
 
-        |
+            </div>
 
-        <a href="categories.php">
-            Categories
-        </a>
 
-        |
+            <!-- =========================================
+                 SALES SUMMARY
+            ========================================== -->
 
-        <a href="orders.php">
-            Orders
-        </a>
+            <div class="reports-grid">
 
-        |
 
-        <a href="reports.php">
-            Reports
-        </a>
+                <!-- TOTAL SALES -->
 
-    </p>
+                <div class="report-card report-card-sales">
 
+                    <div class="report-icon">
+                        💰
+                    </div>
 
-    <hr>
+                    <div class="report-info">
 
+                        <span class="report-label">
+                            TOTAL SALES
+                        </span>
 
-    <!-- ==================================================
-         SALES SUMMARY
-    =================================================== -->
+                        <strong class="report-value">
+                            Rs.
+                            <?php
+                            echo number_format(
+                                (float) $total_sales,
+                                2
+                            );
+                            ?>
+                        </strong>
 
-    <h2>
-        Sales Summary
-    </h2>
+                        <small>
+                            Completed orders only
+                        </small>
 
+                    </div>
 
-    <table
-        border="1"
-        cellpadding="15"
-        cellspacing="0"
-    >
+                </div>
 
-        <tr>
 
-            <th>
-                Total Sales
-            </th>
+                <!-- COMPLETED ORDERS -->
 
-            <th>
-                Completed Orders
-            </th>
+                <div class="report-card">
 
-            <th>
-                Items Sold
-            </th>
+                    <div class="report-icon">
+                        ✓
+                    </div>
 
-            <th>
-                Pending Orders
-            </th>
+                    <div class="report-info">
 
-            <th>
-                Cancelled Orders
-            </th>
+                        <span class="report-label">
+                            COMPLETED ORDERS
+                        </span>
 
-        </tr>
+                        <strong class="report-value">
+                            <?php
+                            echo (int) $total_orders;
+                            ?>
+                        </strong>
 
+                        <small>
+                            Successfully completed
+                        </small>
 
-        <tr>
+                    </div>
 
-            <!-- TOTAL SALES -->
+                </div>
 
-            <td>
 
-                Rs.
+                <!-- ITEMS SOLD -->
 
-                <?php
-                echo number_format(
-                    (float) $total_sales,
-                    2
-                );
-                ?>
+                <div class="report-card">
 
-            </td>
+                    <div class="report-icon">
+                        📦
+                    </div>
 
+                    <div class="report-info">
 
-            <!-- COMPLETED ORDERS -->
+                        <span class="report-label">
+                            ITEMS SOLD
+                        </span>
 
-            <td>
+                        <strong class="report-value">
+                            <?php
+                            echo (int) $total_items;
+                            ?>
+                        </strong>
 
-                <?php
-                echo (int) $total_orders;
-                ?>
+                        <small>
+                            Total product quantity
+                        </small>
 
-            </td>
+                    </div>
 
+                </div>
 
-            <!-- ITEMS SOLD -->
 
-            <td>
+                <!-- PENDING ORDERS -->
 
-                <?php
-                echo (int) $total_items;
-                ?>
+                <div class="report-card report-card-pending">
 
-            </td>
+                    <div class="report-icon">
+                        ⏳
+                    </div>
 
+                    <div class="report-info">
 
-            <!-- PENDING ORDERS -->
+                        <span class="report-label">
+                            PENDING ORDERS
+                        </span>
 
-            <td>
+                        <strong class="report-value">
+                            <?php
+                            echo (int) $pending_orders;
+                            ?>
+                        </strong>
 
-                <?php
-                echo (int) $pending_orders;
-                ?>
+                        <small>
+                            Awaiting completion
+                        </small>
 
-            </td>
+                    </div>
 
+                </div>
 
-            <!-- CANCELLED ORDERS -->
 
-            <td>
+                <!-- CANCELLED ORDERS -->
 
-                <?php
-                echo (int) $cancelled_orders;
-                ?>
+                <div class="report-card report-card-cancelled">
 
-            </td>
+                    <div class="report-icon">
+                        ✕
+                    </div>
 
-        </tr>
+                    <div class="report-info">
 
-    </table>
+                        <span class="report-label">
+                            CANCELLED ORDERS
+                        </span>
 
+                        <strong class="report-value">
+                            <?php
+                            echo (int) $cancelled_orders;
+                            ?>
+                        </strong>
 
-    <br>
+                        <small>
+                            Cancelled orders
+                        </small>
 
-    <hr>
+                    </div>
 
+                </div>
 
-    <!-- ==================================================
-         REPORT INFORMATION
-    =================================================== -->
+            </div>
 
-    <h2>
-        Report Information
-    </h2>
 
+            <!-- =========================================
+                 REPORT INFORMATION
+            ========================================== -->
 
-    <ul>
+            <section class="report-information">
 
-        <li>
-            Total Sales includes only completed orders.
-        </li>
+                <div class="report-information-header">
 
-        <li>
-            Completed Orders shows the number of
-            successfully completed orders.
-        </li>
+                    <span class="admin-reports-label">
+                        REPORT DETAILS
+                    </span>
 
-        <li>
-            Items Sold shows the total quantity of
-            products sold.
-        </li>
+                    <h2>
+                        Report Information
+                    </h2>
 
-        <li>
-            Pending Orders shows orders currently
-            marked as pending.
-        </li>
+                </div>
 
-        <li>
-            Cancelled Orders shows orders marked
-            as cancelled.
-        </li>
 
-    </ul>
+                <div class="report-information-list">
 
+                    <div class="report-information-item">
 
-    <br>
+                        <span class="report-check">
+                            ✓
+                        </span>
 
+                        <p>
+                            <strong>Total Sales</strong>
+                            includes only completed orders.
+                        </p>
 
-    <a href="dashboard.php">
-        ← Back to Dashboard
-    </a>
+                    </div>
+
+
+                    <div class="report-information-item">
+
+                        <span class="report-check">
+                            ✓
+                        </span>
+
+                        <p>
+                            <strong>Completed Orders</strong>
+                            shows the number of successfully
+                            completed orders.
+                        </p>
+
+                    </div>
+
+
+                    <div class="report-information-item">
+
+                        <span class="report-check">
+                            ✓
+                        </span>
+
+                        <p>
+                            <strong>Items Sold</strong>
+                            shows the total quantity of
+                            products sold.
+                        </p>
+
+                    </div>
+
+
+                    <div class="report-information-item">
+
+                        <span class="report-check">
+                            ✓
+                        </span>
+
+                        <p>
+                            <strong>Pending Orders</strong>
+                            shows orders currently marked
+                            as pending.
+                        </p>
+
+                    </div>
+
+
+                    <div class="report-information-item">
+
+                        <span class="report-check">
+                            ✓
+                        </span>
+
+                        <p>
+                            <strong>Cancelled Orders</strong>
+                            shows orders marked as cancelled.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================================
+                 BACK TO DASHBOARD
+            ========================================== -->
+
+            <div class="reports-footer-link">
+
+                <a href="dashboard.php">
+                    ← Back to Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <?php include "../includes/footer.php"; ?>
 
 
 </body>
