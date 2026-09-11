@@ -1920,3 +1920,31 @@ textarea {
         text-align: center;
     }
 }
+
+/* =========================================================
+   EDIT PRODUCT IMAGE
+========================================================= */
+
+.current-product-image {
+    margin-top: 10px;
+    padding: 15px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    width: fit-content;
+}
+
+.current-product-image img {
+    display: block;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.no-product-image {
+    margin-top: 8px;
+    color: #777;
+    font-size: 14px;
+}
