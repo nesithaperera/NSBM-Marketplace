@@ -2266,3 +2266,226 @@ textarea {
     }
 
 }
+
+/* =========================================================
+   ADMIN ORDERS
+========================================================= */
+
+.admin-orders-page {
+    min-height: 65vh;
+    padding: 45px 20px;
+}
+
+.admin-orders-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.admin-orders-header {
+    margin-bottom: 30px;
+}
+
+.admin-orders-label {
+    color: #006837;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.admin-orders-header h1 {
+    margin: 8px 0 10px;
+    font-size: 36px;
+}
+
+.admin-orders-header p {
+    margin: 0;
+    color: #6b7280;
+}
+
+
+/* =========================================================
+   ORDERS CARD
+========================================================= */
+
+.admin-orders-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.orders-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+/* =========================================================
+   ORDERS TABLE
+========================================================= */
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.orders-table thead {
+    background: #006b3c;
+    color: white;
+}
+
+.orders-table th {
+    padding: 15px 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.orders-table td {
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.orders-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.orders-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   ORDER INFORMATION
+========================================================= */
+
+.order-id {
+    color: #006837;
+    font-weight: bold;
+}
+
+.buyer-name {
+    font-weight: 600;
+    color: #222;
+}
+
+.buyer-email {
+    color: #666;
+}
+
+.order-total {
+    color: #006837;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.order-date {
+    color: #555;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   ORDER STATUS
+========================================================= */
+
+.order-status {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.order-status-pending {
+    background: #fff4d6;
+    color: #946200;
+}
+
+.order-status-completed {
+    background: #e5f6ec;
+    color: #08733c;
+}
+
+.order-status-cancelled {
+    background: #fde8e8;
+    color: #b42318;
+}
+
+
+/* =========================================================
+   VIEW DETAILS BUTTON
+========================================================= */
+
+.view-order-btn {
+    display: inline-block;
+    padding: 8px 13px;
+    background: #006b3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.view-order-btn:hover {
+    background: #00552f;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.admin-orders-empty {
+    background: white;
+    padding: 65px 25px;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.admin-orders-empty-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.admin-orders-empty h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+}
+
+.admin-orders-empty p {
+    margin: 0;
+    color: #777;
+}
+
+
+/* =========================================================
+   ADMIN ORDERS RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .admin-orders-page {
+        padding: 30px 15px;
+    }
+
+    .admin-orders-header h1 {
+        font-size: 30px;
+    }
+
+}
