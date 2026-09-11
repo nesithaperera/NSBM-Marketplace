@@ -50,6 +50,7 @@ $order_result = $order_stmt->get_result();
 
 
 // Check whether order exists
+
 if ($order_result->num_rows == 0) {
     die("Order not found.");
 }
@@ -106,390 +107,568 @@ $items_result = $items_stmt->get_result();
     >
 
     <title>
-        Order #<?php echo $order["id"]; ?> - Order Details
+        Order #<?php echo (int) $order["id"]; ?> - NSBM Marketplace
     </title>
+
+    <link rel="stylesheet" href="../assets/css/style.css">
 
 </head>
 
-
 <body>
 
-    <h1>
-        Order Details
-    </h1>
+    <?php include "../includes/header.php"; ?>
 
 
-    <!-- ==================================================
-         ADMIN NAVIGATION
-    =================================================== -->
+    <main class="admin-order-details-page">
 
-    <p>
+        <div class="admin-order-details-container">
 
-        <a href="dashboard.php">
-            Dashboard
-        </a>
 
-        |
+            <!-- =========================================
+                 PAGE HEADER
+            ========================================== -->
 
-        <a href="users.php">
-            Users
-        </a>
+            <div class="order-details-header">
 
-        |
+                <div>
 
-        <a href="products.php">
-            Products
-        </a>
+                    <span class="admin-order-label">
+                        ORDER MANAGEMENT
+                    </span>
 
-        |
+                    <h1>
+                        Order #<?php
+                        echo (int) $order["id"];
+                        ?>
+                    </h1>
 
-        <a href="categories.php">
-            Categories
-        </a>
+                    <p>
+                        View order information, buyer details,
+                        products and update the order status.
+                    </p>
 
-        |
+                </div>
 
-        <a href="orders.php">
-            Orders
-        </a>
 
-    </p>
+                <a
+                    href="orders.php"
+                    class="back-orders-btn"
+                >
+                    ← Back to Orders
+                </a>
 
+            </div>
 
-    <hr>
 
+            <!-- =========================================
+                 ORDER SUMMARY
+            ========================================== -->
 
-    <!-- ==================================================
-         ORDER INFORMATION
-    =================================================== -->
+            <div class="order-summary-grid">
 
-    <h2>
-        Order #<?php echo (int) $order["id"]; ?>
-    </h2>
 
+                <!-- ORDER STATUS -->
 
-    <h3>
-    Order Status
-</h3>
+                <div class="order-summary-card">
 
-<p>
-    Current Status:
+                    <span class="summary-label">
+                        ORDER STATUS
+                    </span>
 
-    <strong>
-        <?php
-        echo htmlspecialchars(
-            ucfirst($order["status"])
-        );
-        ?>
-    </strong>
-</p>
+                    <div>
 
-
-<form
-    action="update-order-status.php"
-    method="POST"
->
-
-    <input
-        type="hidden"
-        name="order_id"
-        value="<?php echo (int) $order["id"]; ?>"
-    >
-
-
-    <label>
-        Change Status:
-    </label>
-
-    <select
-        name="status"
-        required
-    >
-
-        <option
-            value="pending"
-            <?php
-            if ($order["status"] === "pending") {
-                echo "selected";
-            }
-            ?>
-        >
-            Pending
-        </option>
-
-
-        <option
-            value="completed"
-            <?php
-            if ($order["status"] === "completed") {
-                echo "selected";
-            }
-            ?>
-        >
-            Completed
-        </option>
-
-
-        <option
-            value="cancelled"
-            <?php
-            if ($order["status"] === "cancelled") {
-                echo "selected";
-            }
-            ?>
-        >
-            Cancelled
-        </option>
-
-    </select>
-
-
-    <button type="submit">
-        Update Status
-    </button>
-
-</form>
-
-
-    <p>
-        <strong>Order Date:</strong>
-
-        <?php
-        echo htmlspecialchars(
-            $order["created_at"]
-        );
-        ?>
-    </p>
-
-
-    <hr>
-
-
-    <!-- ==================================================
-         BUYER INFORMATION
-    =================================================== -->
-
-    <h2>
-        Buyer Information
-    </h2>
-
-
-    <p>
-
-        <strong>Name:</strong>
-
-        <?php
-        echo htmlspecialchars(
-            $order["buyer_name"]
-        );
-        ?>
-
-    </p>
-
-
-    <p>
-
-        <strong>Email:</strong>
-
-        <?php
-        echo htmlspecialchars(
-            $order["buyer_email"]
-        );
-        ?>
-
-    </p>
-
-
-    <p>
-
-        <strong>Phone:</strong>
-
-        <?php
-
-        if (!empty($order["buyer_phone"])) {
-
-            echo htmlspecialchars(
-                $order["buyer_phone"]
-            );
-
-        } else {
-
-            echo "Not provided";
-
-        }
-
-        ?>
-
-    </p>
-
-
-    <hr>
-
-
-    <!-- ==================================================
-         ORDER ITEMS
-    =================================================== -->
-
-    <h2>
-        Products in This Order
-    </h2>
-
-
-    <?php if ($items_result->num_rows > 0) { ?>
-
-        <table
-            border="1"
-            cellpadding="10"
-            cellspacing="0"
-        >
-
-            <thead>
-
-                <tr>
-
-                    <th>Product</th>
-
-                    <th>Seller</th>
-
-                    <th>Price</th>
-
-                    <th>Quantity</th>
-
-                    <th>Subtotal</th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                <?php
-
-                while (
-                    $item =
-                    $items_result->fetch_assoc()
-                ) {
-
-                ?>
-
-                    <tr>
-
-                        <!-- PRODUCT -->
-
-                        <td>
+                        <span
+                            class="order-status
+                            order-status-<?php
+                                echo htmlspecialchars(
+                                    strtolower(
+                                        $order["status"]
+                                    )
+                                );
+                            ?>"
+                        >
 
                             <?php
                             echo htmlspecialchars(
-                                $item["product_title"]
+                                ucfirst(
+                                    $order["status"]
+                                )
                             );
                             ?>
 
-                        </td>
+                        </span>
+
+                    </div>
+
+                </div>
 
 
-                        <!-- SELLER -->
+                <!-- ORDER DATE -->
 
-                        <td>
+                <div class="order-summary-card">
 
+                    <span class="summary-label">
+                        ORDER DATE
+                    </span>
+
+                    <strong class="summary-value">
+                        <?php
+                        echo htmlspecialchars(
+                            $order["created_at"]
+                        );
+                        ?>
+                    </strong>
+
+                </div>
+
+
+                <!-- TOTAL -->
+
+                <div class="order-summary-card">
+
+                    <span class="summary-label">
+                        TOTAL AMOUNT
+                    </span>
+
+                    <strong class="summary-total">
+                        Rs.
+                        <?php
+                        echo number_format(
+                            (float) $order["total_amount"],
+                            2
+                        );
+                        ?>
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================================
+                 STATUS UPDATE
+            ========================================== -->
+
+            <section class="admin-detail-card">
+
+                <div class="detail-card-header">
+
+                    <div>
+
+                        <span class="detail-section-label">
+                            ORDER MANAGEMENT
+                        </span>
+
+                        <h2>
+                            Update Order Status
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    action="update-order-status.php"
+                    method="POST"
+                    class="order-status-form"
+                >
+
+                    <input
+                        type="hidden"
+                        name="order_id"
+                        value="<?php
+                            echo (int) $order["id"];
+                        ?>"
+                    >
+
+
+                    <div class="status-form-group">
+
+                        <label for="status">
+                            Change Status
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                            required
+                        >
+
+                            <option
+                                value="pending"
+                                <?php
+                                if (
+                                    $order["status"] ===
+                                    "pending"
+                                ) {
+                                    echo "selected";
+                                }
+                                ?>
+                            >
+                                Pending
+                            </option>
+
+
+                            <option
+                                value="completed"
+                                <?php
+                                if (
+                                    $order["status"] ===
+                                    "completed"
+                                ) {
+                                    echo "selected";
+                                }
+                                ?>
+                            >
+                                Completed
+                            </option>
+
+
+                            <option
+                                value="cancelled"
+                                <?php
+                                if (
+                                    $order["status"] ===
+                                    "cancelled"
+                                ) {
+                                    echo "selected";
+                                }
+                                ?>
+                            >
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="update-status-btn"
+                    >
+                        Update Status
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- =========================================
+                 BUYER INFORMATION
+            ========================================== -->
+
+            <section class="admin-detail-card">
+
+                <div class="detail-card-header">
+
+                    <div>
+
+                        <span class="detail-section-label">
+                            CUSTOMER
+                        </span>
+
+                        <h2>
+                            Buyer Information
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="buyer-info-grid">
+
+
+                    <div class="buyer-info-item">
+
+                        <span class="buyer-info-label">
+                            Name
+                        </span>
+
+                        <strong>
                             <?php
                             echo htmlspecialchars(
-                                $item["seller_name"]
+                                $order["buyer_name"]
                             );
                             ?>
+                        </strong>
 
-                        </td>
+                    </div>
 
 
-                        <!-- PRICE -->
+                    <div class="buyer-info-item">
 
-                        <td>
+                        <span class="buyer-info-label">
+                            Email
+                        </span>
+
+                        <strong>
+                            <?php
+                            echo htmlspecialchars(
+                                $order["buyer_email"]
+                            );
+                            ?>
+                        </strong>
+
+                    </div>
+
+
+                    <div class="buyer-info-item">
+
+                        <span class="buyer-info-label">
+                            Phone
+                        </span>
+
+                        <strong>
+
+                            <?php
+
+                            if (
+                                !empty(
+                                    $order["buyer_phone"]
+                                )
+                            ) {
+
+                                echo htmlspecialchars(
+                                    $order["buyer_phone"]
+                                );
+
+                            } else {
+
+                                echo "Not provided";
+
+                            }
+
+                            ?>
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================================
+                 ORDER ITEMS
+            ========================================== -->
+
+            <section class="admin-detail-card">
+
+                <div class="detail-card-header">
+
+                    <div>
+
+                        <span class="detail-section-label">
+                            ORDER CONTENTS
+                        </span>
+
+                        <h2>
+                            Products in This Order
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <?php if ($items_result->num_rows > 0) { ?>
+
+
+                    <div class="order-items-table-wrapper">
+
+                        <table class="order-items-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Product</th>
+
+                                    <th>Seller</th>
+
+                                    <th>Price</th>
+
+                                    <th>Quantity</th>
+
+                                    <th>Subtotal</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <?php
+
+                                while (
+                                    $item =
+                                    $items_result->fetch_assoc()
+                                ) {
+
+                                ?>
+
+                                    <tr>
+
+
+                                        <!-- PRODUCT -->
+
+                                        <td>
+
+                                            <strong class="item-product-name">
+
+                                                <?php
+                                                echo htmlspecialchars(
+                                                    $item[
+                                                        "product_title"
+                                                    ]
+                                                );
+                                                ?>
+
+                                            </strong>
+
+                                        </td>
+
+
+                                        <!-- SELLER -->
+
+                                        <td>
+
+                                            <?php
+                                            echo htmlspecialchars(
+                                                $item["seller_name"]
+                                            );
+                                            ?>
+
+                                        </td>
+
+
+                                        <!-- PRICE -->
+
+                                        <td>
+
+                                            Rs.
+                                            <?php
+                                            echo number_format(
+                                                (float)
+                                                $item["price"],
+                                                2
+                                            );
+                                            ?>
+
+                                        </td>
+
+
+                                        <!-- QUANTITY -->
+
+                                        <td>
+
+                                            <span class="item-quantity">
+
+                                                <?php
+                                                echo (int)
+                                                    $item["quantity"];
+                                                ?>
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- SUBTOTAL -->
+
+                                        <td>
+
+                                            <strong class="item-subtotal">
+
+                                                Rs.
+                                                <?php
+                                                echo number_format(
+                                                    (float)
+                                                    $item["subtotal"],
+                                                    2
+                                                );
+                                                ?>
+
+                                            </strong>
+
+                                        </td>
+
+                                    </tr>
+
+                                <?php } ?>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- =================================
+                         ORDER TOTAL
+                    ================================== -->
+
+                    <div class="order-total-box">
+
+                        <span>
+                            Order Total
+                        </span>
+
+                        <strong>
 
                             Rs.
-
                             <?php
                             echo number_format(
-                                (float) $item["price"],
+                                (float)
+                                $order["total_amount"],
                                 2
                             );
                             ?>
 
-                        </td>
+                        </strong>
+
+                    </div>
 
 
-                        <!-- QUANTITY -->
+                <?php } else { ?>
 
-                        <td>
+                    <div class="no-order-items">
 
-                            <?php
-                            echo (int) $item["quantity"];
-                            ?>
+                        <p>
+                            No products found for this order.
+                        </p>
 
-                        </td>
-
-
-                        <!-- SUBTOTAL -->
-
-                        <td>
-
-                            Rs.
-
-                            <?php
-                            echo number_format(
-                                (float) $item["subtotal"],
-                                2
-                            );
-                            ?>
-
-                        </td>
-
-                    </tr>
+                    </div>
 
                 <?php } ?>
 
-            </tbody>
-
-        </table>
+            </section>
 
 
-        <br>
+            <!-- =========================================
+                 BACK LINK
+            ========================================== -->
+
+            <div class="order-details-footer">
+
+                <a href="orders.php">
+                    ← Back to Orders
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
 
 
-        <!-- ==================================================
-             TOTAL
-        =================================================== -->
-
-        <h2>
-
-            Total:
-
-            Rs.
-
-            <?php
-            echo number_format(
-                (float) $order["total_amount"],
-                2
-            );
-            ?>
-
-        </h2>
-
-
-    <?php } else { ?>
-
-        <p>
-            No products found for this order.
-        </p>
-
-    <?php } ?>
-
-
-    <br>
-
-
-    <a href="orders.php">
-        ← Back to Orders
-    </a>
+    <?php include "../includes/footer.php"; ?>
 
 
 </body>
@@ -499,6 +678,7 @@ $items_result = $items_stmt->get_result();
 <?php
 
 $items_stmt->close();
+
 $conn->close();
 
 ?>
