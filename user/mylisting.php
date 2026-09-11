@@ -1,36 +1,19 @@
-<?php
+\<?php
 
 include "../config/database.php";
 include "../includes/auth.php";
 
 $user_id = $_SESSION["user_id"];
 
-
-/* ======================================================
-   GET USER'S PRODUCTS
-====================================================== */
-
-$sql = "SELECT
-            p.id,
-            p.title,
-            p.description,
-            p.price,
-            p.quantity,
-            p.image,
-            p.location,
-            p.status,
-            p.created_at,
-            c.name AS category_name
+// Get products belonging to the logged-in user
+$sql = "SELECT p.*, c.name AS category_name
         FROM products p
-        LEFT JOIN categories c
-            ON p.category_id = c.id
+        JOIN categories c ON p.category_id = c.id
         WHERE p.user_id = ?
         ORDER BY p.created_at DESC";
 
 $stmt = $conn->prepare($sql);
-
 $stmt->bind_param("i", $user_id);
-
 $stmt->execute();
 
 $result = $stmt->get_result();
@@ -51,10 +34,7 @@ $result = $stmt->get_result();
 
     <title>My Listings - NSBM Marketplace</title>
 
-    <link
-        rel="stylesheet"
-        href="../assets/css/style.css"
-    >
+    <link rel="stylesheet" href="../assets/css/style.css">
 
 </head>
 
@@ -77,14 +57,14 @@ $result = $stmt->get_result();
                 <div>
 
                     <span class="listings-label">
-                        SELLER AREA
+                        SELLER DASHBOARD
                     </span>
 
                     <h1>My Listings</h1>
 
                     <p>
                         Manage the products you have listed
-                        on NSBM Marketplace.
+                        on the NSBM Marketplace.
                     </p>
 
                 </div>
@@ -94,22 +74,32 @@ $result = $stmt->get_result();
                     href="add-product.php"
                     class="add-listing-btn"
                 >
-                    + Add Product
+                    + Add New Product
                 </a>
 
             </div>
 
 
             <!-- =========================================
-                 PRODUCT LIST
+                 PRODUCT LISTINGS
             ========================================== -->
 
-            <?php if ($result->num_rows > 0) { ?>
+            <?php
 
-                <div class="listings-grid">
+            if ($result->num_rows > 0) {
 
-                    <?php while ($product = $result->fetch_assoc()) { ?>
+            ?>
 
+                <div class="my-listings-grid">
+
+                    <?php
+
+                    while (
+                        $product =
+                        $result->fetch_assoc()
+                    ) {
+
+                    ?>
 
                         <div class="listing-card">
 
@@ -155,94 +145,57 @@ $result = $stmt->get_result();
                             </div>
 
 
-                            <!-- PRODUCT CONTENT -->
+                            <!-- PRODUCT INFORMATION -->
 
                             <div class="listing-content">
 
 
                                 <div class="listing-top">
 
-                                    <span class="listing-category">
-
+                                    <h2>
                                         <?php
                                         echo htmlspecialchars(
-                                            $product["category_name"]
-                                            ?? "Uncategorized"
+                                            $product["title"]
                                         );
                                         ?>
-
-                                    </span>
+                                    </h2>
 
 
                                     <span
                                         class="listing-status status-<?php
                                             echo htmlspecialchars(
-                                                $product["status"]
+                                                strtolower(
+                                                    $product["status"]
+                                                )
                                             );
                                         ?>"
                                     >
-
                                         <?php
-                                        echo ucfirst(
-                                            htmlspecialchars(
+                                        echo htmlspecialchars(
+                                            ucfirst(
                                                 $product["status"]
                                             )
                                         );
                                         ?>
-
                                     </span>
 
                                 </div>
 
 
-                                <h2>
+                                <p class="listing-category">
 
                                     <?php
                                     echo htmlspecialchars(
-                                        $product["title"]
+                                        $product["category_name"]
                                     );
-                                    ?>
-
-                                </h2>
-
-
-                                <p class="listing-description">
-
-                                    <?php
-
-                                    $description =
-                                        $product["description"];
-
-                                    if (
-                                        strlen($description) > 100
-                                    ) {
-
-                                        echo htmlspecialchars(
-                                            substr(
-                                                $description,
-                                                0,
-                                                100
-                                            )
-                                        ) . "...";
-
-                                    } else {
-
-                                        echo htmlspecialchars(
-                                            $description
-                                        );
-
-                                    }
-
                                     ?>
 
                                 </p>
 
 
-                                <!-- PRICE -->
+                                <p class="listing-price">
 
-                                <div class="listing-price">
-
-                                    LKR
+                                    Rs.
                                     <?php
                                     echo number_format(
                                         $product["price"],
@@ -250,19 +203,15 @@ $result = $stmt->get_result();
                                     );
                                     ?>
 
-                                </div>
+                                </p>
 
-
-                                <!-- DETAILS -->
 
                                 <div class="listing-details">
 
                                     <span>
                                         <strong>Quantity:</strong>
                                         <?php
-                                        echo htmlspecialchars(
-                                            $product["quantity"]
-                                        );
+                                        echo $product["quantity"];
                                         ?>
                                     </span>
 
@@ -310,14 +259,19 @@ $result = $stmt->get_result();
 
                         </div>
 
+                    <?php
 
-                    <?php } ?>
+                    }
+
+                    ?>
 
                 </div>
 
+            <?php
 
-            <?php } else { ?>
+            } else {
 
+            ?>
 
                 <!-- =====================================
                      EMPTY STATE
@@ -332,7 +286,7 @@ $result = $stmt->get_result();
                     <h2>No Products Listed Yet</h2>
 
                     <p>
-                        You have not added any products to the
+                        You haven't added any products to the
                         marketplace yet.
                     </p>
 
@@ -345,8 +299,20 @@ $result = $stmt->get_result();
 
                 </div>
 
-
             <?php } ?>
+
+
+            <!-- =========================================
+                 MARKETPLACE LINK
+            ========================================== -->
+
+            <div class="marketplace-link">
+
+                <a href="../products.php">
+                    ← View Marketplace
+                </a>
+
+            </div>
 
         </div>
 
@@ -355,13 +321,6 @@ $result = $stmt->get_result();
 
     <?php include "../includes/footer.php"; ?>
 
-
 </body>
 
 </html>
-
-<?php
-
-$stmt->close();
-
-?>
