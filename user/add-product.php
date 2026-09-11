@@ -193,178 +193,246 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <title>Add Product - NSBM Marketplace</title>
 
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
 </head>
 
 <body>
 
-    <h1>Add New Product</h1>
+    <?php include "../includes/header.php"; ?>
 
-    <?php if ($message != "") { ?>
+    <main class="product-form-page">
 
-        <p>
-            <?php echo htmlspecialchars($message); ?>
-        </p>
+        <div class="product-form-container">
 
-    <?php } ?>
+            <div class="product-form-header">
+                <span class="form-label">SELL ON NSBM MARKETPLACE</span>
 
+                <h1>Add New Product</h1>
 
-    <form
-        method="POST"
-        enctype="multipart/form-data"
-    >
-
-        <label>
-            Product Title:
-        </label>
-
-        <br>
-
-        <input
-            type="text"
-            name="title"
-            required
-        >
-
-        <br><br>
+                <p>
+                    Create a product listing and make it available
+                    to the NSBM community.
+                </p>
+            </div>
 
 
-        <label>
-            Description:
-        </label>
+            <?php if ($message != "") { ?>
 
-        <br>
-
-        <textarea
-            name="description"
-            rows="5"
-            required
-        ></textarea>
-
-        <br><br>
-
-
-        <label>
-            Category:
-        </label>
-
-        <br>
-
-        <select
-            name="category_id"
-            required
-        >
-
-            <option value="">
-                Select Category
-            </option>
-
-            <?php
-
-            $category_result = $conn->query(
-                "SELECT id, name
-                 FROM categories
-                 WHERE status = 'active'
-                 ORDER BY name ASC"
-            );
-
-            while (
-                $category = $category_result->fetch_assoc()
-            ) {
-
-            ?>
-
-                <option
-                    value="<?php echo $category["id"]; ?>"
-                >
-
-                    <?php
-                    echo htmlspecialchars($category["name"]);
-                    ?>
-
-                </option>
+                <div class="form-message">
+                    <?php echo htmlspecialchars($message); ?>
+                </div>
 
             <?php } ?>
 
-        </select>
 
-        <br><br>
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                class="product-form"
+            >
 
+                <div class="form-group">
 
-        <label>
-            Price:
-        </label>
+                    <label for="title">
+                        Product Title
+                    </label>
 
-        <br>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="Enter product title"
+                        value="<?php echo htmlspecialchars($_POST["title"] ?? ""); ?>"
+                        required
+                    >
 
-        <input
-            type="number"
-            name="price"
-            step="0.01"
-            min="0.01"
-            required
-        >
-
-        <br><br>
-
-
-        <label>
-            Quantity:
-        </label>
-
-        <br>
-
-        <input
-            type="number"
-            name="quantity"
-            min="1"
-            step="1"
-            required
-        >
-
-        <br><br>
+                </div>
 
 
-        <label>
-            Location:
-        </label>
+                <div class="form-group">
 
-        <br>
+                    <label for="description">
+                        Description
+                    </label>
 
-        <input
-            type="text"
-            name="location"
-            required
-        >
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="6"
+                        placeholder="Describe your product..."
+                        required
+                    ><?php echo htmlspecialchars($_POST["description"] ?? ""); ?></textarea>
 
-        <br><br>
-
-
-        <label>
-            Product Image:
-        </label>
-
-        <br>
-
-        <input
-            type="file"
-            name="image"
-            accept=".jpg,.jpeg,.png,.gif"
-        >
-
-        <br><br>
+                </div>
 
 
-        <button type="submit">
-            Add Product
-        </button>
+                <div class="form-group">
 
-    </form>
+                    <label for="category_id">
+                        Category
+                    </label>
 
-    <br>
+                    <select
+                        id="category_id"
+                        name="category_id"
+                        required
+                    >
 
-    <a href="mylisting.php">
-        Back to My Listings
-    </a>
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        <?php
+
+                        $category_result = $conn->query(
+                            "SELECT id, name
+                             FROM categories
+                             WHERE status = 'active'
+                             ORDER BY name ASC"
+                        );
+
+                        while (
+                            $category = $category_result->fetch_assoc()
+                        ) {
+
+                        ?>
+
+                            <option
+                                value="<?php echo $category["id"]; ?>"
+                                <?php
+                                if (
+                                    isset($_POST["category_id"]) &&
+                                    $_POST["category_id"] == $category["id"]
+                                ) {
+                                    echo "selected";
+                                }
+                                ?>
+                            >
+
+                                <?php
+                                echo htmlspecialchars($category["name"]);
+                                ?>
+
+                            </option>
+
+                        <?php } ?>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="price">
+                            Price (LKR)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="price"
+                            name="price"
+                            step="0.01"
+                            min="0.01"
+                            placeholder="0.00"
+                            value="<?php echo htmlspecialchars($_POST["price"] ?? ""); ?>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="quantity">
+                            Quantity
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            min="1"
+                            step="1"
+                            placeholder="1"
+                            value="<?php echo htmlspecialchars($_POST["quantity"] ?? ""); ?>"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="location">
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="Enter your location"
+                        value="<?php echo htmlspecialchars($_POST["location"] ?? ""); ?>"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="image">
+                        Product Image
+                    </label>
+
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept=".jpg,.jpeg,.png,.gif"
+                    >
+
+                    <small class="form-help">
+                        JPG, JPEG, PNG or GIF images are allowed.
+                    </small>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="form-submit-btn"
+                    >
+                        Add Product
+                    </button>
+
+                    <a
+                        href="mylisting.php"
+                        class="form-cancel-btn"
+                    >
+                        Back to My Listings
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <?php include "../includes/footer.php"; ?>
 
 </body>
 
