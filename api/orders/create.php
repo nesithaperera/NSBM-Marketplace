@@ -110,7 +110,7 @@ try {
 
     $stmt->close();
 
-    $order_status = "completed";
+    $order_status = "pending";
 
     $sql = "INSERT INTO orders
             (buyer_id, total_amount, status)
